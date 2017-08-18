@@ -45,9 +45,10 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'eScienceCloud'
-copyright = u'2017, Na Liu'
-author = u'Na Liu'
+project = u'SDU eScienceCloud'
+copyright = u'2017, Institut for Matematik og Datalogi, University of Southern Denmark, Denmark
+'
+author = u'Claudio Pica, Bjørn Høj Jakobsen, Dan Sebastian Thrane, Na Liu'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
