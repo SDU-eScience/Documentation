@@ -46,9 +46,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'SDU eScienceCloud'
-copyright = u'2017, Institut for Matematik og Datalogi, University of Southern Denmark, Denmark
-'
-author = u'Claudio Pica, Bjørn Høj Jakobsen, Dan Sebastian Thrane, Na Liu'
+copyright = u'2017, Institut for Matematik og Datalogi, University of Southern Denmark, Denmark'
+author = u' Na Liu'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -88,8 +87,7 @@ html_theme = 'alabaster'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#
-# html_theme_options = {}
+#html_theme_options = {}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
