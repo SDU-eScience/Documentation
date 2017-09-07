@@ -10,12 +10,12 @@ This project was proposed by SDU eSciene Center, which is structured as a compet
 Components
 ==========
 * `ansible`_
-* `Java JSF/Primefaces`_
 * `iRODS`_
 * `elasticstack`_
 * `ceph`_
 * `singularity`_
 * `postgres`_
+* `Java JSF/Primefaces`_
 
 ansible
 '''''''
@@ -38,21 +38,19 @@ We installed components against HPC nodes by ansible, which is a radically simpl
 +-----------------+------------------------------+------------------+--------------+
 
 
-Java JSF/Primefaces
-'''''''''''''''''''
-IRODS
+iRODS
 '''''
 
-* `Functionality of IRODS`_
+* `iRODS usage description`_
 * `Postgres database instance setup`_
-* `IRODS installation and setup`_
-* `IRODS deployment overview`_
+* `iRODS installation and setup`_
+* `iRODS deployment overview`_
 
-Functionality of IRODS
-''''''''''''''''''''''
+iRODS usage description
+'''''''''''''''''''''''
 
-IRODS is an open source data management software used by research organizations and government agencies worldwide. It is a middleware which in our case sits above the Ceph filesystem and our application.
-We use IRODS mainly in three ways:
+iRODS is an open source data management software used by research organizations and government agencies worldwide. It is a middleware which in our case sits above the Ceph filesystem and our application.
+We use iRODS mainly in three ways-
 
 * Manage data objects and metadata
 * Configure resource
@@ -60,7 +58,7 @@ We use IRODS mainly in three ways:
 
 Postgres database instance setup
 ''''''''''''''''''''''''''''''''
-A database instance should be created and configured before installing iRods. The following PSQL is used for setting up our database.
+A database instance should be created and configured before installing iRODS. The following PSQL is used for setting up our database.
 
 .. code-block:: sql
    :linenos:
@@ -87,7 +85,7 @@ View permissions
 
 
 
-IRODS installation and setup
+iRODS installation and setup
 ''''''''''''''''''''''''''''
 
 1. install the public key and add YUM repository 
@@ -99,7 +97,7 @@ IRODS installation and setup
    wget -qO - https://packages.irods.org/renci-irods.yum.repo | sudo tee
    /etc/yum.repos.d/renci-irods.yum.repo
 
-2. install Extra Packages for Enterprise Linux (EPEL), IRODS and IRODS database plugin for postgres
+2. install Extra Packages for Enterprise Linux (EPEL), iRODS and iRODS database plugin for postgres
 
 .. code-block:: bash
    :linenos: 
@@ -115,12 +113,12 @@ IRODS installation and setup
    sudo yum update irods-server irods-database-plugin-postgres
 
 
-IRODS deployment overview
+iRODS deployment overview
 '''''''''''''''''''''''''
 
-Our iRODS deployment includes:
+Our iRODS deployment includes three key components
 
-* an IRODS Metadata Catalog(iCAT) database
+* an iRODS Metadata Catalog(iCAT) database
 * a Catalog Provider
 * a Catalog Consumers
 
@@ -138,6 +136,8 @@ singularity
 '''''''''''
 postgres
 ''''''''
+Java JSF/Primefaces
+'''''''''''''''''''
 
 .. toctree::
    :maxdepth: 2
