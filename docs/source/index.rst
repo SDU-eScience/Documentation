@@ -14,7 +14,7 @@ Components
 * `elasticstack`_
 * `ceph`_
 * `singularity`_
-* `postgres`_
+* `postgreSQL`_
 * `Java JSF/Primefaces`_
 
 ansible
@@ -42,8 +42,6 @@ iRODS
 '''''
 
 * `iRODS usage description`_
-* `Postgres database instance setup`_
-* `iRODS installation and setup`_
 * `iRODS deployment overview`_
 
 iRODS usage description
@@ -56,9 +54,18 @@ We use iRODS mainly in three ways-
 * Configure resource
 * Secure collaboration
 
-Postgres database instance setup
+iRODS deployment overview
+'''''''''''''''''''''''''
+
+Our iRODS deployment includes three key components
+
+* an iRODS Metadata Catalog(iCAT) database
+* a Catalog Provider
+* a Catalog Consumers
+
+iCAT database instance setup
 ''''''''''''''''''''''''''''''''
-A database instance should be created and configured before installing iRODS. The following PSQL is used for setting up our database.
+iRODS neither creates nor manages a database instance itself, just the tables within the database. Therefore, the database instance should be created and configured before installing iRODS. PostgreSQL is the database that is used to implement the iCAT database.The following PSQL is used for setting up our database.
 
 .. code-block:: sql
    :linenos:
@@ -81,11 +88,8 @@ View permissions
     -----------+----------+----------+-------------+-------------+-----------------------
      ICAT      | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =Tc/postgres     +
                |          |          |             |             | postgres=CTc/postgres+
-               |          |          |             |             | irods=CTc/postgres
-
-
-
-iRODS installation and setup
+               |          |          |             |             | irods=CTc/p
+iRODS Catalog Provider setup
 ''''''''''''''''''''''''''''
 
 1. install the public key and add YUM repository 
@@ -93,36 +97,78 @@ iRODS installation and setup
 .. code-block:: bash
    :linenos:
 
-   sudo rpm --import https://packages.irods.org/irods-signing-key.asc
-   wget -qO - https://packages.irods.org/renci-irods.yum.repo | sudo tee
+   $ (sudo) rpm --import https://packages.irods.org/irods-signing-key.asc
+   $ wget -qO - https://packages.irods.org/renci-irods.yum.repo | sudo tee
    /etc/yum.repos.d/renci-irods.yum.repo
 
-2. install Extra Packages for Enterprise Linux (EPEL), iRODS and iRODS database plugin for postgres
+2. install Extra Packages for Enterprise Linux (EPEL), iRODS and iRODS database plugin for postgreSQL
 
 .. code-block:: bash
    :linenos: 
 
-   sudo yum install epel-release
-   sudo yum install irods-server irods-database-plugin-postgres
+   $ (sudo) yum install epel-release
+   $ (sudo) yum install irods-server irods-database-plugin-postgres
 
 3. upgrade all installed packages
 
 .. code-block:: bash
    :linenos:
 
-   sudo yum update irods-server irods-database-plugin-postgres
+   $ (sudo) yum update irods-server irods-database-plugin-postgres
+
+4. run `setup_irods.py` script to fullfil information of the iRODS Catalog Provider
+
+.. code-block:: bash
+   :linenos:
+
+   $ (sudo) python /var/lib/irods/scripts/setup_irods.py
+
+   
+The asked information is shown as below
+
+1. Service Account
+  
+*  Service Account Name
+*  Service Account Group
+*  Catalog Service Role
+
+2. Database Connection
+
+*  ODBC Driver
+*  Database Server's Hostname or IP
+*  Database Server's Port
+*  Database Name
+*  Database User
+*  Database Password
+*  Stored Passwords Salt
+
+3. iRODS Server Options
+
+*  Zone Name
+*  Zone Port
+*  Parallel Port Range (Begin)
+*  Parallel Port Range (End)
+*  Control Plane Port
+*  Schema Validation Base URI
+*  iRODS Administrator Username
+
+4. Keys and Passwords
+
+*  zone_key
+*  negotiation_key
+*  Control Plane Key
+*  iRODS Administrator Password
+
+5. Vault Directory
 
 
-iRODS deployment overview
-'''''''''''''''''''''''''
+Once a server is up and running, you can view the environment settings by running
 
-Our iRODS deployment includes three key components
+.. code-block:: bash
+   :linenos:
 
-* an iRODS Metadata Catalog(iCAT) database
-* a Catalog Provider
-* a Catalog Consumers
+   $ ienv
 
-PostgreSQL is the database that is used to implement the iCAT database.
 
 elasticstack
 '''''''''''''
@@ -134,8 +180,8 @@ ceph
 ''''
 singularity
 '''''''''''
-postgres
-''''''''
+postgreSQL
+''''''''''
 Java JSF/Primefaces
 '''''''''''''''''''
 
