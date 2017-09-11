@@ -11,20 +11,20 @@ Components
 ==========
 * `ansible`_
 * `iRODS`_
-* `elasticstack`_
 * `ceph`_
+* `elasticstack`_
 * `singularity`_
 * `postgreSQL`_
 * `Java JSF/Primefaces`_
 
 ansible
-'''''''
+========
 We installed components against HPC nodes by ansible, which is a radically simple IT automation engine. Key components which we installed are shown as below.
    
 +-----------------+------------------------------+------------------+--------------+
 |Node             |Packages                      |Version           |Provider      |
 +=================+==============================+==================+==============+
-|Ceph Monitor     |ceph-mon                      |2:12.1.4-0        |@cep_stable   |
+|Ceph Monitor     |ceph-mon                      |2:12.1.4-0        |@ceph_stable  |
 +-----------------+------------------------------+------------------+--------------+
 |Ceph OSDs        |ceph-osd                      |2:12.1.4-0        |@ceph_stable  |
 +-----------------+------------------------------+------------------+--------------+
@@ -38,14 +38,13 @@ We installed components against HPC nodes by ansible, which is a radically simpl
 +-----------------+------------------------------+------------------+--------------+
 
 
-iRODS
-'''''
 
-* `iRODS usage description`_
-* `iRODS deployment overview`_
+
+iRODS
+=====
 
 iRODS usage description
-'''''''''''''''''''''''
+-----------------------
 
 iRODS is an open source data management software used by research organizations and government agencies worldwide. It is a middleware which in our case sits above the Ceph filesystem and our application.
 We use iRODS mainly in three ways-
@@ -55,7 +54,7 @@ We use iRODS mainly in three ways-
 * Secure collaboration
 
 iRODS deployment overview
-'''''''''''''''''''''''''
+-------------------------
 
 Our iRODS deployment includes three key components
 
@@ -64,7 +63,7 @@ Our iRODS deployment includes three key components
 * a Catalog Consumers
 
 iCAT database instance setup
-''''''''''''''''''''''''''''''''
+----------------------------
 iRODS neither creates nor manages a database instance itself, just the tables within the database. Therefore, the database instance should be created and configured before installing iRODS. PostgreSQL is the database that is used to implement the iCAT database.The following PSQL is used for setting up our database.
 
 .. code-block:: sql
@@ -77,8 +76,8 @@ iRODS neither creates nor manages a database instance itself, just the tables wi
    psql> GRANT ALL PRIVILEGES ON DATABASE "ICAT" TO irods;
 
 
-View permissions
-
+view permissions
+^^^^^^^^^^^^^^^^
 .. code-block:: sql
    :linenos:
 
@@ -90,7 +89,7 @@ View permissions
                |          |          |             |             | postgres=CTc/postgres+
                |          |          |             |             | irods=CTc/p
 iRODS Catalog Provider setup
-''''''''''''''''''''''''''''
+----------------------------
 
 1. install the public key and add YUM repository 
 
@@ -170,20 +169,75 @@ Once a server is up and running, you can view the environment settings by runnin
    $ ienv
 
 
+
+ceph
+====
+Ceph overview
+-------------
+
+what is ceph
+^^^^^^^^^^^^^
+Ceph is an open-source, massively scalable, software-defined storage system which provides object, block and file system storage from a single clustered platform.
+
+ceph components
+^^^^^^^^^^^^^^^
+
+* OSD: an Object Storage Daemon (OSD) stores data, handles data replication, recovery, backfilling, rebalancing, and provides some monitoring information to Ceph Monitors by checking other Ceph OSD Daemons for a heartbeat.
+
+* Monitor: a Ceph Monitor maintains maps of the cluster state, including the monitor map, the OSD map, the Placement Group (PG) map, and the CRUSH map.
+
+Ceph installation
+-----------------
+We use ansible to install ceph, and the installed version is luminous.
+
+Ceph configuration and usage
+----------------------------
+Before installing ceph, we create our inventory file, playbook and configuration for our ceph cluster.
+
+Inventory
+^^^^^^^^^
+The ansible inventory file defines the hosts in our cluster and what roles each host plays in our ceph cluster. Inventory file related to ceph installation looks like:
+
+.. code-block:: yml
+
+   [ceph-mon]
+   cephmon[1:3].esciencecloud.sdu.dk
+
+   [ceph-osd]
+   cephosd[1:2].esciencecloud.sdu.dk
+
+Playbook
+^^^^^^^^
+
+Ceph configuration
+^^^^^^^^^^^^^^^^^^^
+ceph-ansible configuration
+""""""""""""""""""""""""""
+ceph.conf configuration
+"""""""""""""""""""""""
+OSD configuration
+"""""""""""""""""
+
+
 elasticstack
-'''''''''''''
+=============
 * logstash
 * elasticsearch
 * kibana
 
-ceph
-''''
+
 singularity
-'''''''''''
+===========
+
+
 postgreSQL
-''''''''''
+==========
+
+
 Java JSF/Primefaces
-'''''''''''''''''''
+===================
+
+
 
 .. toctree::
    :maxdepth: 2
