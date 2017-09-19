@@ -14,7 +14,7 @@ Components
 * `ansible`_
 * `iRODS`_
 * `ceph`_
-* `elasticstack`_
+* `irods-re-audit plugin and elastic stack`_
 * `singularity`_
 * `postgreSQL`_
 * `Java JSF/Primefaces`_
@@ -233,12 +233,61 @@ The configuration for our Ceph storage cluster will be set by the use of ansible
 
 For more information on our Ceph ansible playbooks please refer to `<https://github.com/SDU-eScience/eScienceCloud/tree/master/ansible/playbooks/ansible_ceph>`_
 
-elasticstack
-=============
-* logstash
-* elasticsearch
-* kibana
+irods-re-audit plugin and elastic stack
+========================================
+* irods-re-audit plugin
 
+We have rewritten an iRODs audit plugin for auditing iRODS grid. And our iRODS audit plugin improves from the `official iRODS audit plugin <https://irods.org/2016/12/auditing-irods-with-the-audit-plugin-and-elastic-stack/>`_. The official iRODS audit plugin generates messages for each dynamic policy enforcement point (PEP) is fired, while our iRODS audit plugin filters and cleans the messages which is gerated by the official iRODS audit plugin. The outputs is stored in an rotating log file which is placed at ``/var/lib/irods/log/audit.log``. Each line of this log file contains a JSON message which is corresponding to a certain user'action. For example, the following JSON message is generated after executes an ``iput`` command which uploads a file to iRODS collection.
+
+.. code-block:: json
+
+   {  
+   "pid":4491,
+   "level":"I",
+   "msg":{  
+      "ts":1505731837906,
+      "completed":true,
+      "type":"putObject",
+      "accessedBy":{  
+         "username":"rods",
+         "zone":"tempZone",
+         "type":""
+      },
+      "path":"/tempZone/home/rods/imada/irods_dashboard.json"
+     }
+   }
+
+
+The following table shows that the user actions which can be logged by our iRODS audit plugin. 
+
++-------------------+------------------+--------------------------------------------------------------------------+
+|iCommands          |Message type      |Description                                                               |
++===================+==================+==========================================================================+
+|iput               |putObject         |Store a file into iRODS                                                   |
++-------------------+------------------+--------------------------------------------------------------------------+      
+|iget               |objectAccessed    |Get data-objects or collections from iRODS space, either to the specified |
+|                   |                  |local area or to the current working directory                            |            
++-------------------+------------------+--------------------------------------------------------------------------+
+|iadmin mkuser      |userCreation      |Create a new iRODS user in the ICAT database                              |           
++-------------------+------------------+--------------------------------------------------------------------------+
+|igroupadmin mkgroup|userCreation      |Create a user group                                                       |
++-------------------+------------------+--------------------------------------------------------------------------+
+|icp                |objectAccess      |Copies an irods data-object (file) or collection (directory) to another   |
+|                   |dataObjCopy       |data-object or collection                                                 |
++-------------------+------------------+--------------------------------------------------------------------------+
+|irm                |dataObjRemove     |Remove one or more data-object or collection from iRODS space             |
++-------------------+------------------+--------------------------------------------------------------------------+
+|imv                |dataObjRename     |Moves/renames an irods data-object (file) or collection (directory) to    |
+|                   |                  |another, data-object or collection                                        |
++-------------------+------------------+--------------------------------------------------------------------------+
+|ichmod             |objectModeModified|Modify access to dataObjects (iRODS files) and collections (directories)  |       
++-------------------+------------------+--------------------------------------------------------------------------+
+|iadmin mkresc      |createResource    |Create (register) a new coordinating or storage resource                  |
++-------------------+------------------+--------------------------------------------------------------------------+
+
+
+
+* elastic stack
 
 singularity
 ===========
