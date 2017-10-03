@@ -17,7 +17,7 @@ Components
 * `irods-re-audit plugin and elastic stack`_
 * `singularity`_
 * `postgreSQL`_
-* `pgpool-II`_
+* `postgreSQL hot standby & pgpool-II`_
 * `Java JSF/Primefaces`_
 * `HPC`_
 
@@ -71,7 +71,7 @@ iCAT database instance setup
 
 iRODS neither creates nor manages a database instance itself, just the tables within the database. Therefore, the database instance should be created and configured before installing iRODS. PostgreSQL is the database for us which is used to implement the iCAT database. The following PSQL is used for setting up our database.
 
-.. code-block:: sql
+.. code-block:: psql
 
    $ (sudo) su - postgres
    postgres$ psql
@@ -82,7 +82,7 @@ iRODS neither creates nor manages a database instance itself, just the tables wi
 
 Run ``\l`` to view the permissions
 
-.. code-block:: sql
+.. code-block:: psql
 
     postgres=# \l
                                       List of databases
@@ -127,7 +127,7 @@ After installation, run ``setup_irods.py`` script to fullfil information of the 
 
 The asked information is shown as below
 
-.. code-block:: console
+.. code-block:: text-only
 
    1. Service Account
   
@@ -315,9 +315,83 @@ singularity
 postgreSQL
 ==========
 
+
+postgreSQL hot standby & pgpool-II
+==================================
+postgreSQL hot standby & streaming replication settings
+-------------------------------------------------------
+We have three PostgreSQL database instances-one primary and two hot standbys. These two hot standbys are replicas of the primary so that we can run read-only queries on them. PostgreSQL provides ``streaming replication`` for the capability to continuously ship and apply the WAL XLOG records to our standby servers in order to keep them current. To set up ``hot standby`` for our two PostgreSQL instances and enable ``streaming replication``, our configurations are shown as below.
+
+1. create an user named replication with REPLICATION privileges
+
+.. code-block:: psql
+
+   $ CREATE ROLE replication WITH REPLICATION PASSWORD 'ourpassword' LOGIN
+
+
+2. Set up connections and authentication on the primary
+
+Edit ``postgresql.conf``
+
+.. code-block:: text-only
+
+   listen_addresses = '*'
+
+
+Edit ``pg_hba.conf``
+
+.. code-block:: text-only
+
+   host  replication  replication  127.0.0.1/32  trust
+
+
+3. Set up the streaming replication related parameters on the primary server
+
+Edit ``postgresql.conf``
+
+.. code-block:: text-only
+   
+   # To enable read-only queries on a standby server
+   # wal_level must be set to hot standby
+   wal_level = hot_standby
+
+   # Specifies the maximum number of concurrent connections
+   # from standby servers or streaming base backup clients
+   max_wal_senders = 5
+
+   # Enable WAL archiving on the primary to an archive directory accessible from
+   # the standby. If wal_keep_segments is a high enough number to retain the WAL
+   # segments required for the standby server, this is not necessary
+   archive_mode    = on
+   archive_command = 'cp %p /var/lib/pgsql/archive/%f'
+
+4. Make a base backup by copying the primary server's data directory to the standby server
+
+We use ``pg_basebackup``to fetch the entire data directory of our PostgreSQL installation from the primary and placing it onto the standby server. Run ``pg_basebackup`` command as the database superuser, in our case is ``postgres``, to make sure the permissions are preserved. -R option creates a minimal recovery command file which is ``recovery.conf`` for standbys within their data directories in order for streaming replication.
+
+.. code-block:: psql
+
+   pg_basebackup -U replication -h 172.22.240.11 -p 5432 -D /var/lib/pgsql/9.6/data1 -R
+   pg_basebackup -U replication -h 172.22.240.11 -p 5432 -D /var/lib/pgsql/9.6/data2 -R
+
+
+5. Set up replication-related parameters, connections and authentication in the standby server like the primary, so that the standby might work as a primary   after failover
+
+6. Enable read-only queries on the standby server
+   
+   Edit ``postgresql.conf``
+   
+   .. code-block:: text-only
+   
+      hot_standby = on
+
+
+7. Start postgres in the standby server. It will start streaming replication.
+
+
 pgpool-II
-==========
-pgpool-II is a middleware that works between PostgreSQL servers and a PostgreSQL database client. It takes an advantage of the replication feature to reduce the load on each PostgreSQL server by distributing SELECT queries among multiple servers, improving system's overall throughput.
+----------
+pgpool-II is a middleware that works between PostgreSQL servers and a PostgreSQL database client. It takes an advantage of the replication feature to reducethe load on each PostgreSQL server by distributing SELECT queries among multiple servers, improving system's overall throughput.
 
 pgpool installation
 -------------------
@@ -337,15 +411,17 @@ Configuring pcp.conf
 ^^^^^^^^^^^^^^^^^^^^
 PCP commands are UNIX commands which manipulate pgpool-II via the network. A PCP user and password for us has been declared in ``pcp.conf`` in ``/etc`` directory. A user ``postgres`` and its associated password has been written as one line using the following format:
 
-.. code-block:: conf
+.. code-block:: text-only
+   
    postgres:[md5 encrypted password]
 
 [md5 encrypted password] can be produced with the ``pg_md5`` command. The following command used to generate the ``md5 encrypted password`` for ``postgres`` user for us.
 
-.. code-block:: console
+.. code-block:: bash
 
    $ pg_md5 your_password
    1060b7b46a3bd36b3a0d66e0127d0517
+
 
 Configuring pgpool.conf
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -353,14 +429,27 @@ In pgpool-II we use ``streaming replication`` mode  which means that PostgreSQL 
 
 * connection settings
 
-  .. code-block:: console
-
-     listen_addresses = '*'                    #'*' accepts all incoming connections
-     port = 9999                               #The port number used by pgpool-II to listen for connections
-     socket_dir = '/var/run/postgresql/'       #The directory where the UNIX domain socket accepting connections for pgpool-II will be created
-     pcp_listen_addresses = '*'                #'*' accepts all incoming connections
-     pcp_port = 9898                           #The port number used by PCP process to listen for connections
-     pcp_socket_dir = '/var/run/postgresql/'   #The directory where the UNIX domain socket accepting connections for pgpool-II will be created
+  .. code-block:: text-only
+     
+     # '*' accepts all incoming connections 
+     listen_addresses = '*'
+     
+     # The port number used by pgpool-II to listen for connections    
+     port = 9999                          
+     
+     # The directory where the UNIX domain socket accepting connections     
+     # for pgpool-II will be created
+     socket_dir = '/var/run/postgresql/'      
+     
+     # '*' accepts all incoming connections
+     pcp_listen_addresses = '*'                
+     
+     # The port number used by PCP process to listen for connections
+     pcp_port = 9898
+    
+     # The directory where the UNIX domain socket accepting connections
+     # for pgpool-II will be created                   
+     pcp_socket_dir = '/var/run/postgresql/'  
 
 
 * running mode settings
@@ -368,18 +457,19 @@ In pgpool-II we use ``streaming replication`` mode  which means that PostgreSQL 
   To enable ``streaming replication mode`` in pgpool-II, we have to firstly turn on ``master_slave_mode`` which is used to couple pgpool-II with another master/slave replication
   software in our case is ``streaming replication``, which PostgreSQL server is responsible for doing the actual data replication. 
 
-  .. code-block:: console
+  .. code-block:: text-only
 
-     #Setting to on enables the master/slave mode
+     # Setting to on enables the master/slave mode
      master_slave_mode = on
-     #Suitable for PostgreSQL's built-in streaming replication function
+     
+     # Suitable for PostgreSQL's built-in streaming replication function
      master_slave_sub_mode = 'stream'      
 
 * backend settings
 
   We have three backends which pgpool communicates with. And they all needs to be specified by some parameters.
 
-  .. code-block:: console 
+  .. code-block:: text-only
 
      # Host name or IP address to connect to for backend 0     
      backend_hostname0 = 'localhost'        
