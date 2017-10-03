@@ -370,8 +370,10 @@ In pgpool-II we use ``streaming replication`` mode  which means that PostgreSQL 
 
   .. code-block:: console
 
-     master_slave_mode = on                 #Setting to on enables the master/slave mode
-     master_slave_sub_mode = 'stream'       #Suitable for PostgreSQL's built-in streaming replication function
+     #Setting to on enables the master/slave mode
+     master_slave_mode = on
+     #Suitable for PostgreSQL's built-in streaming replication function
+     master_slave_sub_mode = 'stream'      
 
 * backend settings
 
@@ -379,28 +381,34 @@ In pgpool-II we use ``streaming replication`` mode  which means that PostgreSQL 
 
   .. code-block:: console 
 
-     backend_hostname0 = 'localhost'                              # Host name or IP address to connect to for backend 0
-     backend_port0 = 5432                                         # Port number for backend 0
-     backend_weight0 = 1                                          # Weight for backend 0 (only in load balancing mode)
-     backend_data_directory0 = '/data'                            # Data directory for backend 0
-     backend_flag0 = 'ALLOW_TO_FAILOVER'                          # Controls various backend behavior
-                                                                  # ALLOW_TO_FAILOVER or DISALLOW_TO_FAILOVER
+     # Host name or IP address to connect to for backend 0     
+     backend_hostname0 = 'localhost'        
+     
+     # Port number for backend 0
+     backend_port0 = 5432                  
+     
+     # Weight for backend 0 (only in load balancing mode)     
+     backend_weight0 = 1
+     
+     # Data directory for backend 0                    
+     backend_data_directory0 = '/data'
 
-     backend_hostname1 = 'localhost'                              # Host name or IP address to connect to for backend 1
-     backend_port1 = 5433                                         # Port number for backend 1
-     backend_weight1 = 1                                          # Weight for backend 1 (only in load balancing mode)
-     backend_data_directory1 = '/data1'                           # Data directory for backend 1
-     backend_flag1 = 'ALLOW_TO_FAILOVER'                          # Controls various backend behavior
-                                                                  # ALLOW_TO_FAILOVER or DISALLOW_TO_FAILOVER
+     # Controls various backend behavior
+     # ALLOW_TO_FAILOVER or DISALLOW_TO_FAILOVER      
+     backend_flag0 = 'ALLOW_TO_FAILOVER'    
 
-
-
-     backend_hostname2 = 'localhost'                              # Host name or IP address to connect to for backend 2
-     backend_port2 = 5434                                         # Port number for backend 2
-     backend_weight2 = 1                                          # Weight for backend 2 (only in load balancing mode)
-     backend_data_directory2 = '/data2'                           # Data directory for backend 2
-     backend_flag2 = 'ALLOW_TO_FAILOVER'                          # Controls various backend behavior
-                                                                  # ALLOW_TO_FAILOVER or DISALLOW_TO_FAILOVER
+     backend_hostname1 = 'localhost'        
+     backend_port1 = 5433                   
+     backend_weight1 = 1                   
+     backend_data_directory1 = '/data1'     
+     backend_flag1 = 'ALLOW_TO_FAILOVER'    
+                                         
+     backend_hostname2 = 'localhost'  
+     backend_port2 = 5434                   
+     backend_weight2 = 1                    
+     backend_data_directory2 = '/data2'     
+     backend_flag2 = 'ALLOW_TO_FAILOVER'    
+                                           
 
 * load balancing settings
   
