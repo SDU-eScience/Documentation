@@ -7,7 +7,7 @@ Welcome to SDU eScienceCloud's documentation!
 =============================================
 This project was proposed by SDU eScience Center, which is structured as a competent research-based organization that has the ownership of the common research infrastructure for eScience, provides user support across the faculties and develops future e-infrastructures andservices.
 
-The key components for this project are listed below as well as their usage descriptions, installations and deployments.
+The key components for this project are listed below as well as their usage descriptions, installations and configurations.
 
 Components
 ==========
@@ -15,28 +15,28 @@ Components
 * `iRODS`_
 * `ceph`_
 * `irods-re-audit plugin and elastic stack`_
-* `singularity`_
-* `postgreSQL`_
+* `postgreSQL clusters`_
 * `postgreSQL hot standby & pgpool-II`_
+* `singularity`_
 * `Java JSF/Primefaces`_
 * `HPC`_
 
 ansible
 ========
-We installed components against HPC nodes by ansible, which is a radically simple IT automation engine. Keycomponents which we installed by ansible are shown as below.
+We installed components against HPC nodes by ansible, which is a radically simple IT automation engine. Key components which we installed by ansible are shown as below.
    
 +-------------+-------------+--------------+-----------+
 |Node         |Version      |Provider      |Playbooks  |
 +=============+=============+==============+===========+
-|Ceph Monitor |2:12.1.4-0   |@ceph_stable  |all.yml    |
-|Ceph OSDs    |2:12.1.4-0   |@ceph_stable  |osds.yml   |
+|Ceph Monitor |2:12.1.4-0   |ceph_stable   |all.yml    |
+|Ceph OSDs    |2:12.1.4-0   |ceph_stable   |osds.yml   |
 |             |             |              |mons.yml   |
 +-------------+-------------+--------------+-----------+
-|Index        |2.4.6-1      |@elasticsearch|           |
+|Index        |2.4.6-1      |elasticsearch |           |
 +-------------+-------------+--------------+-----------+
-|Database     |9.6.4-1      |@pgdg96       |           |          
+|Database     |9.6.4-1      |pgdg96        |           |          
 +-------------+-------------+--------------+-----------+
-|iRods        |4.2.1-1      |@renci-irods  |irods.yml  | 
+|iRods        |4.2.1-1      |renci-irods   |irods.yml  | 
 +-------------+-------------+--------------+-----------+
 
 
@@ -46,8 +46,8 @@ For more information on our ansible playbooks please refer to `<https://github.c
 iRODS
 =====
 
-iRODS usage description
------------------------
+iRODS usages
+------------
 
 iRODS is an open source data management software used by research organizations and government agencies worldwide. It is a middleware which in our case sits above the Ceph filesystem and our application.
 
@@ -57,8 +57,8 @@ We use iRODS mainly in three ways
 * Configure resource
 * Secure collaboration
 
-iRODS deployment overview
--------------------------
+iRODS deployments
+-----------------
 
 Our iRODS deployment includes three key components
 
@@ -66,12 +66,12 @@ Our iRODS deployment includes three key components
 * a Catalog Provider
 * a Catalog Consumer
 
-iCAT database instance setup
-----------------------------
+iCAT database instance setups
+-----------------------------
 
-iRODS neither creates nor manages a database instance itself, just the tables within the database. Therefore, the database instance should be created and configured before installing iRODS. PostgreSQL is the database for us which is used to implement the iCAT database. The following PSQL is used for setting up our database.
+iRODS neither creates nor manages a database instance itself, just the tables within the database. Therefore, the database instance should be created and configured before installing iRODS. PostgreSQL is the database for us which is used to implement the iCAT database. The following PSQL was used for setting up our database.
 
-.. code-block:: psql
+.. code-block:: PostgreSQL console
 
    $ (sudo) su - postgres
    postgres$ psql
@@ -80,9 +80,9 @@ iRODS neither creates nor manages a database instance itself, just the tables wi
    psql> GRANT ALL PRIVILEGES ON DATABASE "ICAT" TO irods;
 
 
-Run ``\l`` to view the permissions
+Run ``\l`` to view the permissions.
 
-.. code-block:: psql
+.. code-block:: PostgreSQL console
 
     postgres=# \l
                                       List of databases
@@ -95,7 +95,7 @@ Run ``\l`` to view the permissions
 
 iRODS Catalog Provider installation
 -----------------------------------
-We use ansible to install iRODS and the ``irods.yml`` is the playbook for our iRODS installation. It locates at the root of ansible-irods folder. There are several dependencies for installing iRODS-such dependencies as Extra Packages for Enterprise Linux (EPEL) and iRODS database plugin for future connecting iRODS withpostgreSQL database. Basically to finish the installation, you have to complete the following three steps
+We used ansible to install iRODS and the ``irods.yml`` is the playbook for our iRODS installation. It locates at the root of ansible-irods folder. There are several dependencies for installing iRODS-such dependencies as Extra Packages for Enterprise Linux (EPEL) and iRODS database plugin for future connecting iRODS withpostgreSQL database. Basically to finish the installation, you have to complete the following three steps
 
 * Install the public key and add the repository
 * Install irods-server irods-database-plugin-postgres
@@ -181,18 +181,14 @@ Ceph overview
 
 Ceph is an open-source, massively scalable, software-defined storage system which provides object, block and file system storage from a single clustered platform. Our Ceph storage cluster includes three monitor nodes and two OSD nodes.  
 
-* OSD: an Object Storage Daemon (OSD) stores data, handles data replication, recovery, backfilling, rebalancing, and provides some monitoring information to Ceph Monitors by checking other Ceph OSD Daemons for a heartbeat.
-
-
-* Monitor: a Ceph Monitor maintains maps of the cluster state, including the monitor map, the OSD map, the Placement Group (PG) map, and the CRUSH map.
 
 Ceph installation
 -----------------
-We use ansible to install Ceph through repository channels. That means we get Ceph installed through a new repository. It is managed by the ``ceph_origin`` variable. If ``ceph_origin`` is set to ``repository``, you have to choose which repository you want to download Ceph. It is controlled by the ``ceph_origin`` variable. In our case we use ``community`` option, which fetches packages from `the official community Ceph repositories <http://download.ceph.com>`_.
+We used ansible to install Ceph through repository channels. That meant we got Ceph installed through a new repository. It is managed by the ``ceph_origin`` variable. If ``ceph_origin`` is set to ``repository``, you have to choose which repository you want to download Ceph. It is controlled by the ``ceph_origin`` variable. In our case we used ``community``option, which fetched packages from `the official community Ceph repositories <http://download.ceph.com>`_.
 
 Ceph configuration
 ----------------------------
-Before installing ceph, we create our inventory file, playbook and configuration for our Ceph storage cluster.
+Before installing ceph, we created our inventory file, playbook and configuration for our Ceph storage cluster.
 
 Inventory
 ^^^^^^^^^
@@ -208,7 +204,7 @@ The ansible inventory file defines the hosts in our cluster and what roles each 
 
 Playbook
 ^^^^^^^^
-We have our ``site.yml`` playbook to pass to the ``ansible-playbook`` command when deploying our Ceph storage cluster. It locates at the root of ``ansible-ceph`` folder. This playbook installs dependencies like ``python2``, defines deployment design and assigns roleto server groups. The roles assigned to mons server looks like:
+We had our ``site.yml`` playbook to pass to the ``ansible-playbook`` command when deploying our Ceph storage cluster. It locates at the root of ``ansible-ceph`` folder. This playbook installs dependencies like ``python2``, defines deployment design and assigns roleto server groups. The roles assigned to mons server looks like:
 
 
 .. code-block:: yml
@@ -221,7 +217,7 @@ We have our ``site.yml`` playbook to pass to the ``ansible-playbook`` command wh
      - ceph-common
      - ceph-mon
 
-The configuration for our Ceph storage cluster will be set by the use of ansible variable. All of these variables are defined in ``group_vars/`` directory. Part of our configuration that deploys luminous version of Ceph with OSDs looks like this:
+The configuration for our Ceph storage cluster was set by the use of ansible variable. All of these variables are defined in ``group_vars/`` directory. Part of our configuration that deploys ``luminous`` version of Ceph with OSDs looks like this:
 
 .. code-block:: yml
 
@@ -239,7 +235,7 @@ irods-re-audit plugin and elastic stack
 
 * irods-re-audit plugin
 
-We have rewritten an iRODs audit plugin for auditing iRODS grid. And our iRODS audit plugin improves from the `official iRODS audit plugin <https://irods.org/2016/12/auditing-irods-with-the-audit-plugin-and-elastic-stack/>`_. The official iRODS audit plugin generates messages whenever a dynamic policy enforcement point (PEP) is fired, and our iRODS audit plugin filters the messages from the messages which is generated by the official iRODS audit plugin. The outputs is stored in an rotating log file which is placed at ``/var/lib/irods/log/audit.log``. Each line of this log file contains a JSON message which is corresponding to a user's event. For example, the following JSON message is generated after executes an ``iput`` command which means that uploads a file to iRODS collection.
+We have written an iRODs audit plugin for auditing iRODS grid. And our iRODS audit plugin improves from the `official iRODS audit plugin <https://irods.org/2016/12/auditing-irods-with-the-audit-plugin-and-elastic-stack/>`_. The official iRODS audit plugin generates messages whenever a dynamic policy enforcement point (PEP) is fired, and our iRODS audit plugin filters the messages from the messages which is generated by the official iRODS audit plugin. The outputs is stored in an rotating log file which is placed at ``/var/lib/irods/log/audit.log``. Each line of this log file contains a JSON message which is corresponding to a user's event. For example, the following JSON message is generated after executingan ``iput`` command which means that uploads a file to iRODS collection.
 
 .. code-block:: json
 
@@ -295,8 +291,7 @@ For more information on our iRODS audit plugin please refer to `<https://github.
 
 * elastic stack
 
-``Elastic stack`` is an overall solutions which aims to reliably and securely take data from any source, in any format, and 
-search, analyze, and visualize it in real time. It provides a collection of open source software tools and in our case we use        ``Filebeat``, ``Logstash``, ``Elasticsearch`` and ``Kibana``. ``Filebeat`` sends data from ``/var/lib/irods/log/audit.log`` to ``Logstash``,which then transforms and stores them in ``Elasticsearch``. ``Elasticsearch`` stores and indexes all the data. Finally the data canbe queried and displayed graphically from ``Elasticsearch`` to ``Kibana``.
+``Elastic stack`` is an overall solutions which aims to reliably and securely take data from any source, in any format, and search, analyze, and visualize it in real time. It provides a collection of open source software tools and in our case we use ``Filebeat``, ``Logstash``, ``Elasticsearch`` and ``Kibana``. ``Filebeat`` sends data from ``/var/lib/irods/log/audit.log`` to ``Logstash``, which then transforms and stores them in ``Elasticsearch``. ``Elasticsearch`` stores and indexes all the data. Finally the data can be queried anddisplayed graphically from ``Elasticsearch`` to ``Kibana``.
 
 filebeat
 ^^^^^^^^
@@ -320,7 +315,7 @@ postgreSQL hot standby & pgpool-II
 ==================================
 postgreSQL hot standby & streaming replication settings
 -------------------------------------------------------
-We have three PostgreSQL database instances-one primary and two hot standbys. These two hot standbys are replicas of the primary so that we can run read-only queries on them. PostgreSQL provides ``streaming replication`` for the capability to continuously ship and apply the WAL XLOG records to our standby servers in order to keep them current. To set up ``hot standby`` for our two PostgreSQL instances and enable ``streaming replication``, our configurations are shown as below.
+We have three PostgreSQL database instances-one primary and two hot standbys. These two hot standbys are replicas of the primary so that we can run read-only queries on them. PostgreSQL provides ``streaming replication`` for the capability to continuously ship and apply the WAL XLOG records to our standby servers in order to keep them current. To set up ``hot standby`` and enable ``streaming replication``, our configurations are shown as below.
 
 1. create an user named replication with REPLICATION privileges
 
@@ -329,7 +324,7 @@ We have three PostgreSQL database instances-one primary and two hot standbys. Th
    $ CREATE ROLE replication WITH REPLICATION PASSWORD 'ourpassword' LOGIN
 
 
-2. Set up connections and authentication on the primary
+2. Set up connections and authentication on the primary server
 
 Edit ``postgresql.conf``
 
@@ -365,9 +360,9 @@ Edit ``postgresql.conf``
    archive_mode    = on
    archive_command = 'cp %p /var/lib/pgsql/archive/%f'
 
-4. Make a base backup by copying the primary server's data directory to the standby server
+4. Make a base backup by copying the primary server's data directory to the standby servers
 
-We use ``pg_basebackup``to fetch the entire data directory of our PostgreSQL installation from the primary and placing it onto the standby server. Run ``pg_basebackup`` command as the database superuser, in our case is ``postgres``, to make sure the permissions are preserved. -R option creates a minimal recovery command file which is ``recovery.conf`` for standbys within their data directories in order for streaming replication.
+We use ``pg_basebackup``to fetch the entire data directory of our PostgreSQL installation from the primary and placing it onto the standby server. Run ``pg_basebackup`` command asthe database superuser, in our case is ``postgres``, to make sure the permissions are preserved. -R option creates a minimal recovery command file which is ``recovery.conf`` for standbys within their data directories in order for streaming replication.
 
 .. code-block:: psql
 
@@ -375,9 +370,9 @@ We use ``pg_basebackup``to fetch the entire data directory of our PostgreSQL ins
    pg_basebackup -U replication -h 172.22.240.11 -p 5432 -D /var/lib/pgsql/9.6/data2 -R
 
 
-5. Set up replication-related parameters, connections and authentication in the standby server like the primary, so that the standby might work as a primary   after failover
+5. Set up replication-related parameters, connections and authentication in the standby servers like the primary, so that the standby might work as a primary after failover
 
-6. Enable read-only queries on the standby server
+6. Enable read-only queries on the standby servers
    
    Edit ``postgresql.conf``
    
@@ -386,7 +381,7 @@ We use ``pg_basebackup``to fetch the entire data directory of our PostgreSQL ins
       hot_standby = on
 
 
-7. Start postgres in the standby server. It will start streaming replication.
+7. Start postgreSQL in the standby servers. It will start streaming replication.
 
 
 pgpool-II
@@ -502,7 +497,7 @@ In pgpool-II we use ``streaming replication`` mode  which means that PostgreSQL 
 
 * load balancing settings
   
-  We enable ``load balancing`` so that pgpool-II can send the writing queries to the primay node, and other queries get load balanced among all backend nodes. To which node the     load balancing mechanism sends read queries is decided at the session start time and will not be changed until the session ends. For more information on which query should be     sent to which node in ``load balancing`` in ``streaming replication`` mode, please refer to `<http://www.pgpool.net/docs/latest/en/html/runtime-config-load-balancing.html>`_.
+  We enabled ``load balancing`` so that pgpool-II could send the writing queries to the primay node, and other queries got load balanced among all backend nodes. To which node the  load balancing mechanism sends read queries is decided at the session start time and will not be changed until the session ends. For more information on which query should be     sent to which node in ``load balancing`` in ``streaming replication`` mode, please refer to `<http://www.pgpool.net/docs/latest/en/html/runtime-config-load-balancing.html>`_.
 
 
 Java JSF/Primefaces
