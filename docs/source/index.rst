@@ -179,8 +179,19 @@ Ceph
 Ceph overview
 -------------
 
-Ceph is an open-source, massively scalable, software-defined storage system which provides object, block and file system storage from a single clustered platform. Our Ceph storage cluster includes three monitor nodes and two OSD nodes.  
+Ceph is an open-source, massively scalable, software-defined storage system which provides object, block and file system storage from a single clustered platform.
 
+Ceph storage cluster  
+--------------------
+Ceph storage cluster deployments begin with setting up each Ceph Node, network and the Ceph Storage Cluster. A Ceph Storage Cluster requires at least one Ceph Monitor and at leasttwo Ceph OSD Daemons. Our Ceph storage cluster includes five nodes - three nodes for ceph monitors and two nodes for ceph OSDs. Additional, three ceph-mgrs have been set up on each of the nodes which is running a ceph-mon daemon. By default, whichever ceph-mgr instance comes up first will be made active by the monitors, and the others will be standbys. 
+
+
+
++-------------+
+|cephmon1     |
+|mgr(active)  |             
++-------------+
+                 
 
 Ceph installation
 -----------------
@@ -229,6 +240,16 @@ The configuration for our Ceph storage cluster was set by the use of ansible var
 
 
 For more information on our Ceph ansible playbooks please refer to `<https://github.com/SDU-eScience/eScienceCloud/tree/master/ansible/playbooks/ansible_ceph>`_
+
+
+Prometheus plugin and Grafana
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ceph prometheus plugin provides a Prometheus exporter to pass on Ceph performance counters from the collection point in ceph-mgr. The exported data can be queried from Grafanawhich allows us to query, visualize, alert on the ceph metrics. The following shows an example Grafana dashboard which queries Prometheus for ceph data.
+
+
+# Image here.
+
 
 irods-re-audit plugin and elastic stack
 ========================================
