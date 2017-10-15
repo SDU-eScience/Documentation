@@ -183,13 +183,36 @@ Ceph is an open-source, massively scalable, software-defined storage system whic
 
 Ceph storage cluster  
 --------------------
-Ceph storage cluster deployments begin with setting up each Ceph Node, network and the Ceph Storage Cluster. A Ceph Storage Cluster requires at least one Ceph Monitor and at leasttwo Ceph OSD Daemons. Our Ceph storage cluster includes five nodes - three nodes for ceph monitors and two nodes for ceph OSDs. Additional, three ceph-mgrs have been set up on each of the nodes which is running a ceph-mon daemon. By default, whichever ceph-mgr instance comes up first will be made active by the monitors, and the others will be standbys. 
+Ceph storage cluster deployments begin with setting up each Ceph Node, network and the Ceph Storage Cluster. A Ceph Storage Cluster requires at least one Ceph Monitor and at leasttwo Ceph OSD Daemons. Our Ceph storage cluster includes five nodes - three nodes for ceph monitors and two nodes for ceph OSDs. Additional, three ceph-mgrs have been set up on each of the nodes which is running a ceph-mon daemon. By default, whichever ceph-mgr instance comes up first will be made active by the monitors, and the others will be standbys. The following shows the information of our ceph storage cluster.
 
-
-
+ 172.22.240.15
 +-------------+
 |cephmon1     |
-|mgr(active)  |             
+|mgr(active)  |         
++-------------+               
+
+ 172.22.240.16                                             
++-------------+
+|cephmon2     |
+|mgr(standby) |             
++-------------+
+
+ 172.22.240.17
++-------------+
+|cephmon3     |
+|mgr(standby) |             
++-------------+
+
+ 172.22.240.18
++-------------+
+|cephosd1     |
+|             |             
++-------------+
+
+ 172.22.240.19
++-------------+
+|cephosd2     |
+|             |             
 +-------------+
                  
 
@@ -323,7 +346,8 @@ elasticsearch
 ^^^^^^^^^
 kibana
 ^^^^^^^^^
-
+postgreSQL clusters
+===========
 singularity
 ===========
 
