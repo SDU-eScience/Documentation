@@ -276,7 +276,8 @@ Prometheus plugin and Grafana
 The ceph prometheus plugin provides a Prometheus exporter to pass on Ceph performance counters from the collection point in ceph-mgr. The exported data can be queried from Grafanawhich allows us to query, visualize, alert on the ceph metrics. The following shows an example Grafana dashboard which queries Prometheus for ceph data.
 
 
-# Image here.
+.. figure::  images/grafana.png
+   :align:   center
 
 
 irods-re-audit plugin and elastic stack
