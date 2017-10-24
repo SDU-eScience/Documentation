@@ -71,7 +71,7 @@ iCAT database instance setups
 
 iRODS neither creates nor manages a database instance itself, just the tables within the database. Therefore, the database instance should be created and configured before installing iRODS. PostgreSQL is the database for us which is used to implement the iCAT database. The following PSQL was used for setting up our database.
 
-.. code-block:: PostgreSQL console
+.. code-block:: psql
 
    $ (sudo) su - postgres
    postgres$ psql
@@ -82,9 +82,10 @@ iRODS neither creates nor manages a database instance itself, just the tables wi
 
 Run ``\l`` to view the permissions.
 
-.. code-block:: PostgreSQL console
+.. code-block:: psql
 
     postgres=# \l
+
                                       List of databases
     Name   |Owner    |Encoding |Collate    |Ctype      |Access privileges   
     -------+---------+---------+-----------+-----------+-----------------------
@@ -92,6 +93,7 @@ Run ``\l`` to view the permissions.
            |         |         |           |           |postgres=CTc/
            |         |         |           |           |postgres+
            |         |         |           |           |irods=CTc/p
+
 
 iRODS Catalog Provider installation
 -----------------------------------
@@ -185,41 +187,9 @@ Ceph storage cluster
 --------------------
 Ceph storage cluster deployments begin with setting up each Ceph Node, network and the Ceph Storage Cluster. A Ceph Storage Cluster requires at least one Ceph Monitor and at leasttwo Ceph OSD Daemons. Our Ceph storage cluster includes five nodes - three nodes for ceph monitors and two nodes for ceph OSDs. Additional, three ceph-mgrs have been set up on each of the nodes which is running a ceph-mon daemon. By default, whichever ceph-mgr instance comes up first will be made active by the monitors, and the others will be standbys. The following shows the information of our ceph storage cluster.
 
+.. figure::  images/ceph_storage_cluster_original_crop_bright.png
+   :align:   center
 
- 172.22.240.15
-+-------------+
-|cephmon1     |
-|mgr(active)  |         
-+-------------+               
-
-
- 172.22.240.16                                             
-+-------------+
-|cephmon2     |
-|mgr(standby) |             
-+-------------+
-
-
- 172.22.240.17
-+-------------+
-|cephmon3     |
-|mgr(standby) |             
-+-------------+
-
-
- 172.22.240.18
-+-------------+
-|cephosd1     |                          
-|             |
-+-------------+
-
-
- 172.22.240.19
-+-------------+
-|cephosd2     |
-|             |                          
-+-------------+
-                 
 
 Ceph installation
 -----------------
