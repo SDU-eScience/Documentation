@@ -21,7 +21,7 @@
 # sys.path.insert(0, os.path.abspath('.'))
 # Na
 # import alabaster
-import alabaster
+#import alabaster
 
 
 # -- General configuration ------------------------------------------------
@@ -84,8 +84,8 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #Na
-html_theme_path = [alabaster.get_path()]
-extensions = ['alabaster']
+#html_theme_path = [alabaster.get_path()]
+#extensions = ['alabaster']
 #
 html_theme = 'alabaster'
 
