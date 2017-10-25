@@ -313,15 +313,39 @@ For more information on our iRODS audit plugin please refer to `<https://github.
 
 ``Elastic stack`` is an overall solutions which aims to reliably and securely take data from any source, in any format, and search, analyze, and visualize it in real time. It provides a collection of open source software tools and in our case we use ``Filebeat``, ``Logstash``, ``Elasticsearch`` and ``Kibana``. ``Filebeat`` sends data from ``/var/lib/irods/log/audit.log`` to ``Logstash``, which then transforms and stores them in ``Elasticsearch``. ``Elasticsearch`` stores and indexes all the data. Finally the data can be queried anddisplayed graphically from ``Elasticsearch`` to ``Kibana``.
 
+
+.. figure::  images/ELK.png
+   :align:   center
+
+
+
+
 filebeat
-^^^^^^^^
+--------
+
+filebeat installation
+^^^^^^^^^^^^^^^^^^^^^^
+
+
+
 
 logstash
-^^^^^^^^^
+--------
+
+
+
 elasticsearch
-^^^^^^^^^
+-------------
+
+
+
 kibana
-^^^^^^^^^
+------
+
+
+
+
+
 postgreSQL clusters
 ===========
 singularity
