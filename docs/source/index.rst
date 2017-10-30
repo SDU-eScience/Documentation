@@ -11,16 +11,15 @@ The key components for this project are listed below as well as their usage desc
 
 Components
 ==========
-* `ansible`_
 * `iRODS`_
 * `ceph`_
 * `irods-re-audit plugin and elastic stack`_
 * `postgreSQL hot standby & pgpool-II`_
-* `ansible`_
 * `postgreSQL clusters`_
 * `singularity`_
 * `Java JSF/Primefaces`_
 * `HPC`_
+* `ansible`_
 
 
 iRODS
@@ -291,7 +290,7 @@ For more information on our iRODS audit plugin please refer to `<https://github.
 
 * elastic stack
 
-``Elastic stack`` is an overall solutions which aims to reliably and securely take data from any source, in any format, and search, analyze, and visualize it in real time. It provides a collection of open source software tools and in our case we use ``Filebeat``, ``Logstash``, ``Elasticsearch`` and ``Kibana``. ``Filebeat`` sends data from ``/var/lib/irods/log/audit.log`` to ``Logstash``, which then transforms and stores them in ``Elasticsearch``. ``Elasticsearch`` stores and indexes all the data. Finally the data can be queried anddisplayed graphically from ``Elasticsearch`` to ``Kibana``.
+``Elastic stack`` is an overall solutions which aims to reliably and securely take data from any source, in any format, and search, analyze, and visualize it in real time. It provides a collection of open source software tools and in our case we use ``Filebeat``, ``Logstash``, ``Elasticsearch`` and ``Kibana``. ``Filebeat`` sends data from ``/var/lib/irods/log/audit.log`` to ``Logstash``, which then transforms and stores them in ``Elasticsearch``. ``Elasticsearch`` stores and indexes all the data. Finally the data can be queried and displayed graphically from ``Elasticsearch`` to ``Kibana``.
 
 
 .. figure::  images/ELK.png
