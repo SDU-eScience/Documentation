@@ -16,31 +16,11 @@ Components
 * `ceph`_
 * `irods-re-audit plugin and elastic stack`_
 * `postgreSQL hot standby & pgpool-II`_
+* `ansible`_
 * `postgreSQL clusters`_
 * `singularity`_
 * `Java JSF/Primefaces`_
 * `HPC`_
-
-ansible
-========
-We installed components against HPC nodes by ansible, which is a radically simple IT automation engine. Key components which we installed by ansible are shown as below.
-   
-+-------------+-------------+--------------+-----------+
-|Node         |Version      |Provider      |Playbooks  |
-+=============+=============+==============+===========+
-|Ceph Monitor |2:12.1.4-0   |ceph_stable   |all.yml    |
-|Ceph OSDs    |2:12.1.4-0   |ceph_stable   |osds.yml   |
-|             |             |              |mons.yml   |
-+-------------+-------------+--------------+-----------+
-|Index        |2.4.6-1      |elasticsearch |           |
-+-------------+-------------+--------------+-----------+
-|Database     |9.6.4-1      |pgdg96        |           |          
-+-------------+-------------+--------------+-----------+
-|iRods        |4.2.1-1      |renci-irods   |irods.yml  | 
-+-------------+-------------+--------------+-----------+
-
-
-For more information on our ansible playbooks please refer to `<https://github.com/SDU-eScience/eScienceCloud/tree/master/ansible/playbooks>`_
 
 
 iRODS
@@ -320,34 +300,37 @@ For more information on our iRODS audit plugin please refer to `<https://github.
 
 ELK installation
 -----------------
-We installed the ELK by ``ELK.yml`` on ``unit03.esciencecloud.sdu.dk``. The ansible playbook for installing ELK is shown below.
-
+We installed the filebeat on ``unit04.esciencecloud.sdu.dk`` currently which is the server running the iRODS Catalog Provider. And logstash, elasticsearch and kibana on ``unit03.esciencecloud.sdu.dk``. On each node, we had to add the Elastic repository first before installing the components. The ansible playbook for adding the Elastic repository is shown as below.
 
 .. code-block:: yml
 
-- hosts: unit03.esciencecloud.sdu.dk
-  become: true
-  tasks:                      
-    - name: add Elastic repo
-      yum_repository:
-       name: Elastic repository for 5.x packages
-       description: Elastic Repository
-       baseurl: https://artifacts.elastic.co/packages/5.x/yum
-       gpgcheck: 1
-       gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
-       enabled: 1           
-       autorefresh: 1
-       type: rpm-md
-                   
-    - name: install filebeat
-      yum:  
-       name: filebeat
-       state: present
+   - hosts: unit04.esciencecloud.sdu.dk
+     become: true
+     tasks:                      
+       - name: add Elastic repo
+         yum_repository:
+          name: Elastic repository for 5.x packages
+          description: Elastic Repository
+          baseurl: https://artifacts.elastic.co/packages/5.x/yum
+          gpgcheck: 1
+          gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+          enabled: 1           
+          autorefresh: 1
+          type: rpm-md
+
+After adding the Elastic repository, using the following YAML to install the filebeat, logstash, elasticsearch and kibana.
+
+.. code-block:: yml
+
+   - name: install filebeat
+     yum:  
+      name: filebeat
+      state: present
        
-    - name: install logstash
-      yum:  
-       name: logstash
-       state: present
+   - name: install logstash
+     yum:  
+      name: logstash
+      state: present
     
     - name: install elasticsearch
       yum:  
@@ -359,17 +342,22 @@ We installed the ELK by ``ELK.yml`` on ``unit03.esciencecloud.sdu.dk``. The ansi
        name: kibana
        state: present
     
-    - name: upgrade all packages
-      yum:
-       name: '*'
-       state: latest
+Updating the yum packahges after each installation
+
+.. code-block:: yml
+
+   - name: upgrade all packages
+     yum:
+      name: '*'
+      state: latest
 
 
 ELK configuration
 ------------------
 
-filebeat
-^^^^^^^^
+filebeat configuration
+^^^^^^^^^^^^^^^^^^^^^^
+Filebeat's configuration file is in YAML format, which locates at ``/etc/filebeat/filebeat.yml``. 
 
 logstash
 ^^^^^^^^^
@@ -569,7 +557,6 @@ In pgpool-II we use ``streaming replication`` mode  which means that PostgreSQL 
   We enabled ``load balancing`` so that pgpool-II could send the writing queries to the primay node, and other queries got load balanced among all backend nodes. To which node the  load balancing mechanism sends read queries is decided at the session start time and will not be changed until the session ends. For more information on which query should be     sent to which node in ``load balancing`` in ``streaming replication`` mode, please refer to `<http://www.pgpool.net/docs/latest/en/html/runtime-config-load-balancing.html>`_.
 
 
-
 postgreSQL clusters
 ===========
 singularity
@@ -578,6 +565,28 @@ Java JSF/Primefaces
 ===================
 HPC
 ====
+
+ansible
+========
+We installed components against HPC nodes by ansible, which is a radically simple IT automation engine. Key components which we installed by ansible are shown as below.
+
++-------------+-------------+--------------+-----------+
+|Node         |Version      |Provider      |Playbooks  |
++=============+=============+==============+===========+
+|Ceph Monitor |2:12.1.4-0   |ceph_stable   |all.yml    |
+|Ceph OSDs    |2:12.1.4-0   |ceph_stable   |osds.yml   |
+|             |             |              |mons.yml   |
++-------------+-------------+--------------+-----------+
+|Index        |2.4.6-1      |elasticsearch |           |
++-------------+-------------+--------------+-----------+
+|Database     |9.6.4-1      |pgdg96        |           |
++-------------+-------------+--------------+-----------+
+|iRods        |4.2.1-1      |renci-irods   |irods.yml  |
++-------------+-------------+--------------+-----------+
+
+
+For more information on our ansible playbooks please refer to `<https://github.com/SDU-eScience/eScienceCloud/tree/master/ansible/playbooks>`_
+
 
 .. toctree::
    :maxdepth: 2
