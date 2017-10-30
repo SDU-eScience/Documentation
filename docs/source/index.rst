@@ -356,7 +356,7 @@ ELK configuration
 
 filebeat configuration
 ^^^^^^^^^^^^^^^^^^^^^^
-Filebeat configuration file is in YAML format, which locates at ``/etc/filebeat/filebeat.yml``. Under ''paths'' sub section which belongs to the ''Filebeat prospectors'' section, we commented out the default and added new entries to specify the path for the iRODS's log file.
+Filebeat configuration file is in YAML format, which locates at ``/etc/filebeat/filebeat.yml``. Under ``paths`` sub section which belongs to the ``Filebeat prospectors`` section, we commented out the default and added new entries to specify the path for the iRODS's log file.
 
 .. code-block:: yml
    
@@ -365,7 +365,7 @@ Filebeat configuration file is in YAML format, which locates at ``/etc/filebeat/
      - /var/lib/irods/log/audit.log*
      #- c:\programdata\elasticsearch\logs\* 
 
-Under ‘’Logstash output‘’ sub section which belongs to the ''Outputs'' section, we defined to use Logstash as the outputs when sending the iRODS's log file as data collection by the filebeat.
+Under ``Logstash output`` sub section which belongs to the ``Outputs`` section, we defined to use Logstash as the outputs when sending the iRODS's log file as data collection by the filebeat.
 
 .. code-block:: yml
    
@@ -377,9 +377,10 @@ Under ‘’Logstash output‘’ sub section which belongs to the ''Outputs'' s
 logstash configuration
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Logstash configuration file is in the JSON format. It is in our case called ''audit.conf'' and  locates at ''/etc/logstash/conf.d''. It has three defined sections-''ínput'', ''filter'' and ''output''. 
+Logstash configuration file is in the JSON format. It is in our case called ``audit.conf`` and  locates at ``/etc/logstash/conf.d``. It has three defined sections-``ínput``, ``filter`` and ``output``. 
 
 * The input section configures Logstash to read the messages from the "beats" queue.
+* The date filter parses dates from [msg][ts] fields, and then timestamp as UNIX_MS which is one of the logstash accepted timestamp.
 * The output writes the resulting information to Elasticsearch under the "audit_log2" index.
 * The stdout writes the resulting output in an easily readable format to the stdout. This can be commented out once debugging is finished.
 
@@ -414,23 +415,20 @@ The Logstash configuration file is shown as below.
    }  
 
 
-elasticsearch
-^^^^^^^^^^^^^^
-
 
 kibana configuration
 ^^^^^^^^^^^^^^^^^^^^^
 
-We used a Kibana dashboard to monitor our iRODS grid. The Kibana service is running on port 5601. So you need to forward this port from ''unit03.esciencecloud.sdu.dk'' to your local computer if you want to access Kibana with http://localhost:5601.
+We used a Kibana dashboard to monitor our iRODS grid. The Kibana service currently is running on ``unit03.esciencecloud.sdu.dk`` with port 5601. So you need to forward this port from your local terminal if you want to access Kibana with http://localhost:5601 throug your local browser.
 
-Forwarding the port from your terminal.
+Forward the port 5601 from your local terminal.
 
 .. code-block:: bash
 
    ssh -L 5601:172.22.240.12:5601 username@130.225.164.200 -N
 
 
-Click the "audit_log2" on the left side and the Kibana dashboard looks like the following.
+Access Kibana web portal with ``http://localhost:5601`` and click the ``audit_log2`` on the left side. The Kibana dashboard looks like the following in our case.
 
 .. figure::  images/kibana.png
    :align:   center
