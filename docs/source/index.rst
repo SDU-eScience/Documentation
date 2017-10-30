@@ -76,7 +76,7 @@ Run ``\l`` to view the permissions.
 
 iRODS Catalog Provider installation
 -----------------------------------
-We used ansible to install iRODS and the ``irods.yml`` is the playbook for our iRODS installation. It locates at the root of ansible-irods folder. There are several dependencies for installing iRODS-such dependencies as Extra Packages for Enterprise Linux (EPEL) and iRODS database plugin for future connecting iRODS withpostgreSQL database. Basically to finish the installation, you have to complete the following three steps
+We used ansible to install iRODS and the ``irods.yml`` is the playbook for our iRODS installation. It locates at the root of ansible-irods folder. There are several dependencies for installing iRODS-such dependencies as Extra Packages for Enterprise Linux (EPEL) and iRODS database plugin for future connecting iRODS with postgreSQL database. Basically to finish the installation, you have to complete the following three steps
 
 * Install the public key and add the repository
 * Install irods-server irods-database-plugin-postgres
@@ -172,7 +172,7 @@ Ceph storage cluster deployments begin with setting up each Ceph Node, network a
 
 Ceph installation
 -----------------
-We used ansible to install Ceph through repository channels. That meant we got Ceph installed through a new repository. It is managed by the ``ceph_origin`` variable. If ``ceph_origin`` is set to ``repository``, you have to choose which repository you want to download Ceph. It is controlled by the ``ceph_origin`` variable. In our case we used ``community``option, which fetched packages from `the official community Ceph repositories <http://download.ceph.com>`_.
+We used ansible to install Ceph through repository channels. That meant we got Ceph installed through a new repository. It is managed by the ``ceph_origin`` variable. If ``ceph_origin`` is set to ``repository``, you have to choose which repository you want to download Ceph. It is controlled by the ``ceph_origin`` variable. In our case we used ``community`` option, which fetched packages from `the official community Ceph repositories <http://download.ceph.com>`_.
 
 Ceph configuration
 ----------------------------
@@ -290,10 +290,10 @@ For more information on our iRODS audit plugin please refer to `<https://github.
 
 * elastic stack
 
-``Elastic stack`` is an overall solutions which aims to reliably and securely take data from any source, in any format, and search, analyze, and visualize it in real time. It provides a collection of open source software tools and in our case we use ``Filebeat``, ``Logstash``, ``Elasticsearch`` and ``Kibana``. ``Filebeat`` sends data from ``/var/lib/irods/log/audit.log`` to ``Logstash``, which then transforms and stores them in ``Elasticsearch``. ``Elasticsearch`` stores and indexes all the data. Finally the data can be queried and displayed graphically from ``Elasticsearch`` to ``Kibana``.
+Elastic stack is an overall solutions which aims to reliably and securely take data from any source, in any format, and search, analyze, and visualize it in real time. It provides a collection of open source software tools and in our case we use Filebeat, Logstash, Elasticsearch and Kibana. Filebeat sends data from ``/var/lib/irods/log/audit.log`` to Logstash, which then transforms and stores them in ``Elasticsearch``. ``Elasticsearch`` stores and indexes all the data. Finally the data can be queried and displayed graphically from ``Elasticsearch`` to ``Kibana``.
 
 
-.. figure::  images/ELK.png
+.. figure::  images/ELK-workflow.png
    :align:   center
 
 
@@ -419,7 +419,7 @@ The Logstash configuration file is shown as below.
 kibana configuration
 ^^^^^^^^^^^^^^^^^^^^^
 
-We used a Kibana dashboard to monitor our iRODS grid. The Kibana service currently is running on ``unit03.esciencecloud.sdu.dk`` with port 5601. So you need to forward this port from your local terminal if you want to access Kibana with http://localhost:5601 throug your local browser.
+We used a Kibana dashboard to monitor our iRODS grid. The Kibana service currently is running on unit03.esciencecloud.sdu.dk with port 5601. So you need to forward this port from your local terminal if you want to access Kibana with ``http://localhost:5601`` throug your local browser.
 
 Forward the port 5601 from your local terminal.
 
@@ -485,7 +485,7 @@ Edit ``postgresql.conf``
 
 4. Make a base backup by copying the primary server's data directory to the standby servers
 
-We use ``pg_basebackup``to fetch the entire data directory of our PostgreSQL installation from the primary and placing it onto the standby server. Run ``pg_basebackup`` command asthe database superuser, in our case is ``postgres``, to make sure the permissions are preserved. -R option creates a minimal recovery command file which is ``recovery.conf`` for standbys within their data directories in order for streaming replication.
+We use ``pg_basebackup`` to fetch the entire data directory of our PostgreSQL installation from the primary and placing it onto the standby server. Run ``pg_basebackup`` command asthe database superuser, in our case is ``postgres``, to make sure the permissions are preserved. -R option creates a minimal recovery command file which is ``recovery.conf`` for standbys within their data directories in order for streaming replication.
 
 .. code-block:: psql
 
