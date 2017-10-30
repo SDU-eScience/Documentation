@@ -15,8 +15,8 @@ Components
 * `iRODS`_
 * `ceph`_
 * `irods-re-audit plugin and elastic stack`_
-* `postgreSQL clusters`_
 * `postgreSQL hot standby & pgpool-II`_
+* `postgreSQL clusters`_
 * `singularity`_
 * `Java JSF/Primefaces`_
 * `HPC`_
@@ -318,43 +318,67 @@ For more information on our iRODS audit plugin please refer to `<https://github.
    :align:   center
 
 
+ELK installation
+-----------------
+We installed the ELK by ``ELK.yml`` on ``unit03.esciencecloud.sdu.dk``. The ansible playbook for installing ELK is shown below.
 
+
+.. code-block:: yml
+
+- hosts: unit03.esciencecloud.sdu.dk
+  become: true
+  tasks:                      
+    - name: add Elastic repo
+      yum_repository:
+       name: Elastic repository for 5.x packages
+       description: Elastic Repository
+       baseurl: https://artifacts.elastic.co/packages/5.x/yum
+       gpgcheck: 1
+       gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+       enabled: 1           
+       autorefresh: 1
+       type: rpm-md
+                   
+    - name: install filebeat
+      yum:  
+       name: filebeat
+       state: present
+       
+    - name: install logstash
+      yum:  
+       name: logstash
+       state: present
+    
+    - name: install elasticsearch
+      yum:  
+       name: elasticsearch
+       state: present
+       
+    - name: install kibana
+      yum:  
+       name: kibana
+       state: present
+    
+    - name: upgrade all packages
+      yum:
+       name: '*'
+       state: latest
+
+
+ELK configuration
+------------------
 
 filebeat
---------
-
-filebeat installation
-^^^^^^^^^^^^^^^^^^^^^^
-
-
-
+^^^^^^^^
 
 logstash
---------
-
-
+^^^^^^^^^
 
 elasticsearch
--------------
-
-
+^^^^^^^^^^^^^^
 
 kibana
-------
-
-
-
-
-
-postgreSQL clusters
-===========
-singularity
-===========
-
-
-postgreSQL
-==========
-
+^^^^^^^
 
 postgreSQL hot standby & pgpool-II
 ==================================
@@ -545,12 +569,16 @@ In pgpool-II we use ``streaming replication`` mode  which means that PostgreSQL 
   We enabled ``load balancing`` so that pgpool-II could send the writing queries to the primay node, and other queries got load balanced among all backend nodes. To which node the  load balancing mechanism sends read queries is decided at the session start time and will not be changed until the session ends. For more information on which query should be     sent to which node in ``load balancing`` in ``streaming replication`` mode, please refer to `<http://www.pgpool.net/docs/latest/en/html/runtime-config-load-balancing.html>`_.
 
 
+
+postgreSQL clusters
+===========
+singularity
+===========
 Java JSF/Primefaces
 ===================
-
-
 HPC
 ====
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
