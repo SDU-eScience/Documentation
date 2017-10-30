@@ -356,7 +356,23 @@ ELK configuration
 
 filebeat configuration
 ^^^^^^^^^^^^^^^^^^^^^^
-Filebeat's configuration file is in YAML format, which locates at ``/etc/filebeat/filebeat.yml``. 
+Filebeat's configuration file is in YAML format, which locates at ``/etc/filebeat/filebeat.yml``. Under ''paths'' sub section which belongs to the ''Filebeat prospectors'' section, we commented out the default and added new entries to specify the path for the iRODS's log file.
+
+.. code-block:: yml
+   
+   # Paths that should be crawled and fetched. Glob based paths.
+   paths:
+     - /var/lib/irods/log/audit.log*
+     #- c:\programdata\elasticsearch\logs\* 
+
+Under ‘’Logstash output‘’ sub section which belongs to the ''Outputs'' section, we defined to use Logstash as the outputs when sending the iRODS's log file as data collection by the filebeat.
+
+.. code-block:: yml
+   
+   output.logstash:
+     # The Logstash hosts
+     hosts: ["unit03.esciencecloud.sdu.dk:5044"] 
+
 
 logstash
 ^^^^^^^^^
