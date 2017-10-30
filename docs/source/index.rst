@@ -377,7 +377,13 @@ Under ‘’Logstash output‘’ sub section which belongs to the ''Outputs'' s
 logstash configuration
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Logstash configuration file is in the JSON format. It is in our case called ''audit.conf'' and  locates at ''/etc/logstash/conf.d''. It has three defined sections-''ínput'', ''filter'' and ''output'' for configuring Logstash to store the beats data in Elasticsearch.
+Logstash configuration file is in the JSON format. It is in our case called ''audit.conf'' and  locates at ''/etc/logstash/conf.d''. It has three defined sections-''ínput'', ''filter'' and ''output''. 
+
+* The input section configures Logstash to read the messages from the "beats" queue.
+* The output writes the resulting information to Elasticsearch under the "audit_log2" index.
+* The stdout writes the resulting output in an easily readable format to the stdout. This can be commented out once debugging is finished.
+
+The Logstash configuration file is shown as below.
 
 .. code-block:: yml
 
@@ -389,7 +395,7 @@ Logstash configuration file is in the JSON format. It is in our case called ''au
    }
 
    filter {
-     date {
+     date  {
        match => ["[msg][ts]", "UNIX_MS"]
      }
    }
@@ -400,19 +406,35 @@ Logstash configuration file is in the JSON format. It is in our case called ''au
        manage_template => false
        index => "audit_log2"
      }
+     
      stdout {
        codec => rubydebug {
-       }
      }
    }
+   }  
 
-  
 
 elasticsearch
 ^^^^^^^^^^^^^^
 
-kibana
-^^^^^^^
+
+kibana configuration
+^^^^^^^^^^^^^^^^^^^^^
+
+We used a Kibana dashboard to monitor our iRODS grid. The Kibana service is running on port 5601. So you need to forward this port from ''unit03.esciencecloud.sdu.dk'' to your local computer if you want to access Kibana with http://localhost:5601.
+
+Forwarding the port from your terminal.
+
+.. code-block:: bash
+
+   ssh -L 5601:172.22.240.12:5601 username@130.225.164.200 -N
+
+
+Click the "audit_log2" on the left side and the Kibana dashboard looks like the following.
+
+.. figure::  images/kibana.png
+   :align:   center
+
 
 postgreSQL hot standby & pgpool-II
 ==================================
@@ -600,7 +622,7 @@ In pgpool-II we use ``streaming replication`` mode  which means that PostgreSQL 
 
 * load balancing settings
   
-  We enabled ``load balancing`` so that pgpool-II could send the writing queries to the primay node, and other queries got load balanced among all backend nodes. To which node the  load balancing mechanism sends read queries is decided at the session start time and will not be changed until the session ends. For more information on which query should be     sent to which node in ``load balancing`` in ``streaming replication`` mode, please refer to `<http://www.pgpool.net/docs/latest/en/html/runtime-config-load-balancing.html>`_.
+We enabled ``load balancing`` so that pgpool-II could send the writing queries to the primay node, and other queries got load balanced among all backend nodes. To which node the  load balancing mechanism sends read queries is decided at the session start time and will not be changed until the session ends. For more information on which query should be     sent to which node in ``load balancing`` in ``streaming replication`` mode, please refer to `<http://www.pgpool.net/docs/latest/en/html/runtime-config-load-balancing.html>`_.
 
 
 postgreSQL clusters
