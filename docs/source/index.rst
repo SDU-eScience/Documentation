@@ -356,7 +356,7 @@ ELK configuration
 
 filebeat configuration
 ^^^^^^^^^^^^^^^^^^^^^^
-Filebeat's configuration file is in YAML format, which locates at ``/etc/filebeat/filebeat.yml``. Under ''paths'' sub section which belongs to the ''Filebeat prospectors'' section, we commented out the default and added new entries to specify the path for the iRODS's log file.
+Filebeat configuration file is in YAML format, which locates at ``/etc/filebeat/filebeat.yml``. Under ''paths'' sub section which belongs to the ''Filebeat prospectors'' section, we commented out the default and added new entries to specify the path for the iRODS's log file.
 
 .. code-block:: yml
    
@@ -374,8 +374,39 @@ Under ‘’Logstash output‘’ sub section which belongs to the ''Outputs'' s
      hosts: ["unit03.esciencecloud.sdu.dk:5044"] 
 
 
-logstash
-^^^^^^^^^
+logstash configuration
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Logstash configuration file is in the JSON format. It is in our case called ''audit.conf'' and  locates at ''/etc/logstash/conf.d''. It has three defined sections-''ínput'', ''filter'' and ''output'' for configuring Logstash to store the beats data in Elasticsearch.
+
+.. code-block:: yml
+
+   input {
+     beats {
+       port => 5044
+       codec => "json"
+     }
+   }
+
+   filter {
+     date {
+       match => ["[msg][ts]", "UNIX_MS"]
+     }
+   }
+
+   output {
+     elasticsearch {
+       hosts => "localhost:9200"
+       manage_template => false
+       index => "audit_log2"
+     }
+     stdout {
+       codec => rubydebug {
+       }
+     }
+   }
+
+  
 
 elasticsearch
 ^^^^^^^^^^^^^^
