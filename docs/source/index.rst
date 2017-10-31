@@ -290,8 +290,7 @@ For more information on our iRODS audit plugin please refer to `<https://github.
 
 * elastic stack
 
-Elastic stack is an overall solutions which aims to reliably and securely take data from any source, in any format, and search, analyze, and visualize it in real time. It provides a collection of open source software tools and in our case we use Filebeat, Logstash, Elasticsearch and Kibana. Filebeat sends data from ``/var/lib/irods/log/audit.log`` to Logstash, which then transforms and stores them in ``Elasticsearch``. ``Elasticsearch`` stores and indexes all the data. Finally the data can be queried and displayed graphically from ``Elasticsearch`` to ``Kibana``.
-
+Elastic stack is an overall solutions which aims to reliably and securely take data from any source, in any format, and search, analyze, and visualize it in real time. It provides a collection of open source software tools and in our case we use Filebeat, Logstash, Elasticsearch and Kibana. Filebeat sends data from ``/var/lib/irods/log/audit.log`` to Logstash, which then transforms and stores them in Elasticsearch. Elasticsearch stores and indexes all the data. Finally the data can be queried and displayed graphically from Elasticsearch to Kibana.
 
 .. figure::  images/ELK-workflow.png
    :align:   center
@@ -512,10 +511,10 @@ pgpool-II
 pgpool-II is a middleware that works between PostgreSQL servers and a PostgreSQL database client. It takes an advantage of the replication feature to reducethe load on each PostgreSQL server by distributing SELECT queries among multiple servers, improving system's overall throughput.
 
 pgpool installation
--------------------
+--------------------
 
 pgpool configuration
--------------------
+---------------------
 The pgpool-II user account
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Add a Unix user account to run pgpool-II. The user name is pgpool.
@@ -634,22 +633,50 @@ HPC
 
 ansible
 ========
-We installed components against HPC nodes by ansible, which is a radically simple IT automation engine. Key components which we installed by ansible are shown as below.
+We installed components against HPC nodes by ansible, which is an radically simple IT automation engine. 
 
-+-------------+-------------+--------------+-----------+
-|Node         |Version      |Provider      |Playbooks  |
-+=============+=============+==============+===========+
-|Ceph Monitor |2:12.1.4-0   |ceph_stable   |all.yml    |
-|Ceph OSDs    |2:12.1.4-0   |ceph_stable   |osds.yml   |
-|             |             |              |mons.yml   |
-+-------------+-------------+--------------+-----------+
-|Index        |2.4.6-1      |elasticsearch |           |
-+-------------+-------------+--------------+-----------+
-|Database     |9.6.4-1      |pgdg96        |           |
-+-------------+-------------+--------------+-----------+
-|iRods        |4.2.1-1      |renci-irods   |irods.yml  |
-+-------------+-------------+--------------+-----------+
+ansible installation
+--------------------
 
+We installed EPEL first before installing Ansible.
+
+.. code-block:: yml
+
+   sudo yum install epel-release
+
+
+And then install Ansible.
+
+.. code-block:: yml
+
+   sudo yum install ansible
+
+
+ansible inventory configuration
+--------------------------------
+
+Ansible works against multiple HPC nodes in our infrastructure at the same time. It does this by selecting portions of the HPC nodeslisted in Ansible’s inventory, which locates at ``/etc/ansible/hosts``. The configuration for our Ansible's inventory is shown as bellow. 
+
+.. code-block:: yml
+
+   [web]
+   web.esciencecloud.sdu.dk
+   [index]
+   index.esciencecloud.sdu.dk
+   [db]
+   db.esciencecloud.sdu.dk
+   [irods]
+   irods[1:2].esciencecloud.sdu.dk
+   [ceph-mon]
+   cephmon[1:3].esciencecloud.sdu.dk
+   [ceph-osd]
+   cephosd[1:2].esciencecloud.sdu.dk
+
+The components we have installed by Ansible accross our HPC nodes are shown as below.
+
+.. figure::  images/installed components.png
+   :align:   center
+ 
 
 For more information on our ansible playbooks please refer to `<https://github.com/SDU-eScience/eScienceCloud/tree/master/ansible/playbooks>`_
 
