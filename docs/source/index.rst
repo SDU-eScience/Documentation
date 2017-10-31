@@ -16,10 +16,10 @@ Components
 * `irods-re-audit plugin and elastic stack`_
 * `postgreSQL hot standby & pgpool-II`_
 * `postgreSQL clusters`_
-* `singularity`_
 * `Java JSF/Primefaces`_
 * `HPC`_
 * `ansible`_
+* `singularity`_
 
 
 iRODS
@@ -624,13 +624,12 @@ We enabled load balancing so that pgpool-II could send the writing queries to th
 
 postgreSQL clusters
 ===========
-singularity
-===========
 Java JSF/Primefaces
 ===================
 HPC
 ====
-
+singularity
+===========
 ansible
 ========
 We installed components against HPC nodes by ansible, which is an radically simple IT automation engine. 
@@ -674,7 +673,7 @@ Ansible works against multiple HPC nodes in our infrastructure at the same time.
 
 The components we have installed by Ansible accross our HPC nodes are shown as below.
 
-.. figure::  images/installed components.png
+.. figure::  images/installed-components.png
    :align:   center
  
 
