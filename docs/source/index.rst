@@ -299,11 +299,11 @@ Elastic stack is an overall solutions which aims to reliably and securely take d
 
 ELK installation
 -----------------
-We installed the filebeat on ``unit04.esciencecloud.sdu.dk`` currently which is the server running the iRODS Catalog Provider. And logstash, elasticsearch and kibana on ``unit03.esciencecloud.sdu.dk``. On each node, we had to add the Elastic repository first before installing the components. The ansible playbook for adding the Elastic repository is shown as below.
+We installed the filebeat on irods nodes and logstash, elasticsearch and kibana on the index node. We had to add the Elastic repository first before installing all these components. The ansible playbook for adding the Elastic repository for index mode is shown as below.
 
 .. code-block:: yml
 
-   - hosts: unit04.esciencecloud.sdu.dk
+   - hosts: index
      become: true
      tasks:                      
        - name: add Elastic repo
@@ -317,7 +317,7 @@ We installed the filebeat on ``unit04.esciencecloud.sdu.dk`` currently which is 
           autorefresh: 1
           type: rpm-md
 
-After adding the Elastic repository, using the following YAML to install the filebeat, logstash, elasticsearch and kibana.
+After adding the Elastic repository, using the following YAML to install the filebeat, logstash, elasticsearch and kibana perspectively.
 
 .. code-block:: yml
 
@@ -356,7 +356,7 @@ ELK configuration
 
 filebeat configuration
 ^^^^^^^^^^^^^^^^^^^^^^
-Filebeat configuration file is in YAML format, which locates at ``/etc/filebeat/filebeat.yml``. Under ``paths`` sub section which belongs to the ``Filebeat prospectors`` section, we commented out the default and added new entries to specify the path for the iRODS's log file.
+Filebeat configuration file is in YAML format, which locates at ``/etc/filebeat/filebeat.yml``. Under paths sub section which belongs to the Filebeat prospectors section, we commented out the default and added new entries to specify the path for the iRODS's log file.
 
 .. code-block:: yml
    
@@ -365,7 +365,7 @@ Filebeat configuration file is in YAML format, which locates at ``/etc/filebeat/
      - /var/lib/irods/log/audit.log*
      #- c:\programdata\elasticsearch\logs\* 
 
-Under ``Logstash output`` sub section which belongs to the ``Outputs`` section, we defined to use Logstash as the outputs when sending the iRODS's log file as data collection by the filebeat.
+Under Logstash output sub section which belongs to the Outputs section, we defined to use Logstash as the outputs when sending the iRODS'slog file as data collection by the filebeat.
 
 .. code-block:: yml
    
@@ -384,7 +384,7 @@ Logstash configuration file is in the JSON format. It is in our case called ``au
 * The output writes the resulting information to Elasticsearch under the "audit_log2" index.
 * The stdout writes the resulting output in an easily readable format to the stdout. This can be commented out once debugging is finished.
 
-The Logstash configuration file is shown as below.
+The Logstash configuration file - ``audit.conf`` is shown as below.
 
 .. code-block:: yml
 
@@ -419,7 +419,7 @@ The Logstash configuration file is shown as below.
 kibana configuration
 ^^^^^^^^^^^^^^^^^^^^^
 
-We used a Kibana dashboard to monitor our iRODS grid. The Kibana service currently is running on unit03.esciencecloud.sdu.dk with port 5601. So you need to forward this port from your local terminal if you want to access Kibana with ``http://localhost:5601`` throug your local browser.
+We used a Kibana dashboard to monitor our iRODS grid. The Kibana service currently is running on the index node with port 5601. So you need to forward this port from your local terminal if you want to access Kibana web portal with ``http://localhost:5601`` throug your local browser.
 
 Forward the port 5601 from your local terminal.
 
@@ -428,7 +428,7 @@ Forward the port 5601 from your local terminal.
    ssh -L 5601:172.22.240.12:5601 username@130.225.164.200 -N
 
 
-Access Kibana web portal with ``http://localhost:5601`` and click the ``audit_log2`` on the left side. The Kibana dashboard looks like the following in our case.
+Access Kibana web portal with ``http://localhost:5601`` and click the ``audit_log2`` index on the left side. The Kibana dashboard for monitoring our iRODS grid looks like the following.
 
 .. figure::  images/kibana.png
    :align:   center
@@ -438,7 +438,7 @@ postgreSQL hot standby & pgpool-II
 ==================================
 postgreSQL hot standby & streaming replication settings
 -------------------------------------------------------
-We have three PostgreSQL database instances-one primary and two hot standbys. These two hot standbys are replicas of the primary so that we can run read-only queries on them. PostgreSQL provides ``streaming replication`` for the capability to continuously ship and apply the WAL XLOG records to our standby servers in order to keep them current. To set up ``hot standby`` and enable ``streaming replication``, our configurations are shown as below.
+We have three PostgreSQL database instances-one primary and two hot standbys. These two hot standbys are replicas of the primary so that we can run read-only queries on them. PostgreSQL provides streaming replication for the capability to continuously ship and apply the WAL XLOG records to our standby servers in order to keep them current. To set up hot standby and enable streaming replication, our configurations are shown as below.
 
 1. create an user named replication with REPLICATION privileges
 
@@ -485,7 +485,7 @@ Edit ``postgresql.conf``
 
 4. Make a base backup by copying the primary server's data directory to the standby servers
 
-We use ``pg_basebackup`` to fetch the entire data directory of our PostgreSQL installation from the primary and placing it onto the standby server. Run ``pg_basebackup`` command asthe database superuser, in our case is ``postgres``, to make sure the permissions are preserved. -R option creates a minimal recovery command file which is ``recovery.conf`` for standbys within their data directories in order for streaming replication.
+We use pg_basebackup to fetch the entire data directory of our PostgreSQL installation from the primary and placing it onto the standby server. Run pg_basebackup command asthe database superuser, in our case is postgres, to make sure the permissions are preserved. -R option creates a minimal recovery command file which is ``recovery.conf`` for standbys within their data directories in order for streaming replication.
 
 .. code-block:: psql
 
@@ -518,7 +518,7 @@ pgpool configuration
 -------------------
 The pgpool-II user account
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Add a Unix user account to run pgpool-II. The user name is ``pgpool``.
+Add a Unix user account to run pgpool-II. The user name is pgpool.
 
 .. code-block:: bash
 
@@ -527,13 +527,13 @@ Add a Unix user account to run pgpool-II. The user name is ``pgpool``.
 
 Configuring pcp.conf
 ^^^^^^^^^^^^^^^^^^^^
-PCP commands are UNIX commands which manipulate pgpool-II via the network. A PCP user and password for us has been declared in ``pcp.conf`` in ``/etc`` directory. A user ``postgres`` and its associated password has been written as one line using the following format:
+PCP commands are UNIX commands which manipulate pgpool-II via the network. A PCP user and password for us has been declared in ``pcp.conf`` in ``/etc`` directory. A user postgres and its associated password has been written as one line using the following format:
 
 .. code-block:: text-only
    
    postgres:[md5 encrypted password]
 
-[md5 encrypted password] can be produced with the ``pg_md5`` command. The following command used to generate the ``md5 encrypted password`` for ``postgres`` user for us.
+[md5 encrypted password] can be produced with the pg_md5 command. The following command used to generate the md5 encrypted password for postgres user for us.
 
 .. code-block:: bash
 
@@ -543,7 +543,7 @@ PCP commands are UNIX commands which manipulate pgpool-II via the network. A PCP
 
 Configuring pgpool.conf
 ^^^^^^^^^^^^^^^^^^^^^^^
-In pgpool-II we use ``streaming replication`` mode  which means that PostgreSQL servers operates streaming replication. And ``load balancing`` is possible in this mode. We reuse the sample configuration file for ``streaming replication`` mode from pgpool-II installation. The file is located in ``/etc/pgpool.conf.sample-stream``. Some settings are shown as below.
+In pgpool-II we use streaming replication mode which means that PostgreSQL servers operates streaming replication. And load balancing is possible in this mode. We reuse the sample configuration file for streaming replication mode from pgpool-II installation. The file is located in ``/etc/pgpool.conf.sample-stream``. The main part of our pgpool configrations is shown as below.
 
 * connection settings
 
@@ -620,7 +620,7 @@ In pgpool-II we use ``streaming replication`` mode  which means that PostgreSQL 
 
 * load balancing settings
   
-We enabled ``load balancing`` so that pgpool-II could send the writing queries to the primay node, and other queries got load balanced among all backend nodes. To which node the  load balancing mechanism sends read queries is decided at the session start time and will not be changed until the session ends. For more information on which query should be     sent to which node in ``load balancing`` in ``streaming replication`` mode, please refer to `<http://www.pgpool.net/docs/latest/en/html/runtime-config-load-balancing.html>`_.
+We enabled load balancing so that pgpool-II could send the writing queries to the primay node, and other queries got load balanced among all backend nodes. To which node the load balancing mechanism sends read queries is decided at the session start time and will not be changed until the session ends. For more information on which query should be sent to which node in load balancing in streaming replication mode, please refer to `<http://www.pgpool.net/docs/latest/en/html/runtime-config-load-balancing.html>`_.
 
 
 postgreSQL clusters
