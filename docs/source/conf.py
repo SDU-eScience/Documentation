@@ -21,7 +21,7 @@
 # sys.path.insert(0, os.path.abspath('.'))
 # Na
 # import alabaster
-#import alabaster
+import alabaster
 
 
 # -- General configuration ------------------------------------------------
@@ -47,8 +47,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'SDU eScienceCloud'
-copyright = u'2017, Institut for Matematik og Datalogi, University of Southern Denmark, Denmark'
+project = u'SDU Cloud'
+copyright = u'2017, eScience Center, University of Southern Denmark, Denmark'
 author = u' Na Liu'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -84,8 +84,8 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #Na
-#html_theme_path = [alabaster.get_path()]
-#extensions = ['alabaster']
+html_theme_path = [alabaster.get_path()]
+extensions = ['alabaster']
 #
 html_theme = 'alabaster'
 
