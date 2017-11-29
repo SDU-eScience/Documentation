@@ -28,10 +28,7 @@ The diagram illustrates how components are connected with each other.
  
 
 .. figure::  images/components_communication_diagram.png
-   :height: 1071 px
-   :width: 992 px
-   :scale: 120 %
-   :align: center
+   :align:   center
 
 
 Also check where all the components are installed against the HPC nodes.
