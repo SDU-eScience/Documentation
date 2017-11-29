@@ -28,6 +28,7 @@ The diagram illustrates how components are connected with each other.
  
 
 .. figure::  images/components_communication_diagram.png
+   :height: 643 px
    :width: 660 px
    :scale: 120 %
    :align:   center
