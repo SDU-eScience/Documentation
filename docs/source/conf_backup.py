@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# SDUCloud documentation build configuration file, created by
+# eScienceCloud documentation build configuration file, created by
 # sphinx-quickstart on Fri Aug 18 12:10:07 2017.
 #
 # This file is execfile()d with the current directory set to its
@@ -104,7 +104,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'SDUClouddoc'
+htmlhelp_basename = 'eScienceClouddoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -131,7 +131,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'SDUCloud.tex', u'SDUCloud Documentation',
+    (master_doc, 'eScienceCloud.tex', u'eScienceCloud Documentation',
      u'Na Liu', 'manual'),
 ]
 
@@ -141,7 +141,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'SDUCloud', u'SDUCloud Documentation',
+    (master_doc, 'esciencecloud', u'eScienceCloud Documentation',
      [author], 1)
 ]
 
@@ -152,8 +152,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'SDUCloud', u'SDUCloud Documentation',
-     author, 'SDUCloud', 'One line description of project.',
+    (master_doc, 'eScienceCloud', u'eScienceCloud Documentation',
+     author, 'eScienceCloud', 'One line description of project.',
      'Miscellaneous'),
 ]
 
