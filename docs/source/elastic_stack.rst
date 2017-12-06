@@ -6,10 +6,10 @@ Elastic Stack Components
 
 * There are four main components from the Elastic Stack:
 
- * Logstash - Processes logs
- * Elasticsearch - Stores logs
- * Kibana - Web interface for searching and visualizing logs
- * Filebeat - Installed on iRODS servers that will send audit logs to Logstash
+  * Logstash - Processes logs
+  * Elasticsearch - Stores logs
+  * Kibana - Web interface for searching and visualizing logs
+  * Filebeat - Installed on iRODS servers that will send audit logs to Logstash
 
 Elastic Stack Installation
 --------------------------
@@ -19,26 +19,24 @@ Elastic Stack Installation
 .. code-block:: bash
 
    git clone https://github.com/sadsfae/ansible-elk
-   
    cd ansible-elk
 
 * Edit the Ansible Inventory hosts file with our target Elastic Server (Index Server) and Elastic Client (iRODS Servers) information
   
   * ELK Server
   
-.. code-block:: yml
+  .. code-block:: yml
   
-  [index]
-  index.esciencecloud.sdu.dk
+     [index]
+     index.esciencecloud.sdu.dk
+
   
-
-
   * ELK Client
   
-.. code-block:: yml
+  .. code-block:: yml
   
-  [irods]
-  irods[1:2].esciencecloud.sdu.dk
+     [irods]
+     irods[1:2].esciencecloud.sdu.dk
   
 
 * Run elk.yml playbook against our ELK server.
@@ -62,12 +60,9 @@ Filebeat configuration file is in YAML format, which locates at ``/etc/filebeat/
 
 
    # Paths that should be crawled and fetched. Glob based paths.
-
-   paths:
-
-     - /var/lib/irods/log/audit.log*
-
-     - c:\programdata\elasticsearch\logs\*
+     paths:
+       - /var/lib/irods/log/audit.log*
+       - c:\programdata\elasticsearch\logs\*
 
 
 Under Logstash output sub section which belongs to the Outputs section, we defined to use Logstash as the outputs when sending the iRODS's log file as data collection by the filebeat.
@@ -75,11 +70,8 @@ Under Logstash output sub section which belongs to the Outputs section, we defin
 
 .. code-block:: yml
 
-
    output.logstash:
-
-     # The Logstash hosts
-
+   # The Logstash hosts
      hosts: ["unit03.esciencecloud.sdu.dk:5044”]
 
 Logstash configuration
@@ -100,13 +92,13 @@ The Logstash configuration file - ``audit.conf`` is shown as below.
      beats {
        port => 5044
        codec => "json"
-     }
+           }
    }
 
    filter {
      date  {
        match => ["[msg][ts]", "UNIX_MS"]
-     }
+           }
    }
 
    output {
@@ -120,8 +112,7 @@ The Logstash configuration file - ``audit.conf`` is shown as below.
        codec => rubydebug {
      }
    }
-   }
-
+  }
 
 
 Kibana configuration
