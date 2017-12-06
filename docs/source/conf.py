@@ -88,7 +88,10 @@ html_theme_path = [alabaster.get_path()]
 extensions = ['alabaster']
 #
 html_theme = 'alabaster'
+#Na
 
+def setup(app):
+    app.add_stylesheet('css/custom.css')
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -156,6 +159,4 @@ texinfo_documents = [
      author, 'SDUCloud', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
 

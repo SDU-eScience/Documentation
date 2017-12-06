@@ -27,18 +27,17 @@ The usage descriptions, installations and configurations of each components are 
 The diagram illustrates how components are connected with each other.
  
 
-.. figure::  images/components_communication_diagram.png
-   :align:   center
+.. image::  images/components_communication_diagram.png
+   :align:  center
+   :class:  components-communication
 
 
 Also check where all the components are installed against the HPC nodes.
 
 
-.. _components-installation-information:
-
-
-.. figure::  images/installed_components.png
-   :align:   center
+.. image::  images/installed_components.png
+   :align:  center
+   :class:  components-installation
 
 
 .. toctree::

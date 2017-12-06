@@ -6,20 +6,20 @@ iRODS Usages
 
 iRODS is an open source data management software used by research organizations and government agencies worldwide. It is a middleware which in our case sits above the Ceph filesystem and our application.
 
-We use iRODS mainly in three ways
+* We use iRODS mainly in three ways
 
-* Manage data objects and metadata
-* Configure resource
-* Secure collaboration
+  * Manage data objects and metadata
+  * Configure resource
+  * Secure collaboration
 
 iRODS Deployments
 -----------------
 
-Our iRODS deployment includes three key components
+* Our iRODS deployment includes three key components
 
-* an iRODS Metadata Catalog(iCAT) database
-* a Catalog Provider
-* a Catalog Consumer
+  * an iRODS Metadata Catalog(iCAT) database
+  * a Catalog Provider
+  * a Catalog Consumer
 
 iCAT Database Instance Setups
 -----------------------------
@@ -52,11 +52,11 @@ Run ``\l`` to view the permissions.
 
 iRODS Server Installation
 -----------------------------------
-We used ansible to install iRODS and the ``irods.yml`` is the playbook for our iRODS installation. It locates at the root of ansible-irods folder. There are several dependencies for installing iRODS-such dependencies as Extra Packages for Enterprise Linux (EPEL) and iRODS database plugin for future connecting iRODS with postgreSQL database. Basically to finish the installation, you have to complete the following three steps
+* We used ansible to install iRODS and the ``irods.yml`` is the playbook for our iRODS installation. It locates at the root of ansible-irods folder. There are several dependencies for installing iRODS-such dependencies as Extra Packages for Enterprise Linux (EPEL) and iRODS database plugin for future connecting iRODS with postgreSQL database. Basically to finish the installation, you have to complete the following threesteps
 
-* Install the public key and add the repository
-* Install irods-server irods-database-plugin-postgres
-* Upgrade all the installed packages
+ * Install the public key and add the repository
+ * Install irods-server irods-database-plugin-postgres
+ * Upgrade all the installed packages
 
 The following code which is included in our ``irods.yml`` shows the installation of EPEL.
 
