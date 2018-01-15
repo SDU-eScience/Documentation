@@ -1,3 +1,5 @@
+.. _iRODS:
+
 iRODS
 =====
 
@@ -52,11 +54,13 @@ Run ``\l`` to view the permissions.
 
 iRODS Server Installation
 -----------------------------------
-* We used ansible to install iRODS and the ``irods.yml`` is the playbook for our iRODS installation. It locates at the root of ansible-irods folder. There are several dependencies for installing iRODS-such dependencies as Extra Packages for Enterprise Linux (EPEL) and iRODS database plugin for future connecting iRODS with postgreSQL database. Basically to finish the installation, you have to complete the following threesteps
+We used ansible to install iRODS and the ``irods.yml`` is the playbook for our iRODS installation. It locates at the root of ansible-irods folder. There are several dependencies for installing iRODS-such dependencies as Extra Packages for Enterprise Linux (EPEL) and iRODS database plugin for future connecting iRODS with postgreSQL database. 
 
- * Install the public key and add the repository
- * Install irods-server irods-database-plugin-postgres
- * Upgrade all the installed packages
+* Basically to finish the installation, you have to complete the following three steps
+
+  * Install the public key and add the repository
+  * Install irods-server irods-database-plugin-postgres
+  * Upgrade all the installed packages
 
 The following code which is included in our ``irods.yml`` shows the installation of EPEL.
 
@@ -126,7 +130,5 @@ Once a server is up and running, you can view the environment settings by runnin
 .. code-block:: bash
 
    $ ienv
-
-For more information on our iRODS ansible playbooks please refer to `<https://github.com/SDU-eScience/eScienceCloud/tree/master/ansible/playbooks/ansible_irods>`_
 
 

@@ -14,14 +14,7 @@ Elastic Stack Components
 Elastic Stack Installation
 --------------------------
 
-* Clone repo and setup our ansible hosts file
-
-.. code-block:: bash
-
-   git clone https://github.com/sadsfae/ansible-elk
-   cd ansible-elk
-
-* Edit the Ansible Inventory hosts file with our target Elastic Server (Index Server) and Elastic Client (iRODS Servers) information
+* Edit our Ansible hosts file with the target Elastic Server (Index Server) and Elastic Client (iRODS Servers) information
   
   * ELK Server
   
@@ -40,10 +33,18 @@ Elastic Stack Installation
   
 
 * Run elk.yml playbook against our ELK server.
+
+  * ELK Server
  
-.. code-block:: yml
+  .. code-block:: yml
   
-   ansible-playbook -i hosts install/elk.yml
+     ansible-playbook -i hosts install/elk.yml
+
+  * ELK Client
+
+  .. code-block:: yml
+  
+     ansible-playbook -i hosts install/elk-client.yml
 
 
 Elastic Stack Configuration
@@ -52,8 +53,7 @@ Elastic Stack Configuration
 Filebeat configuration
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Filebeat configuration file is in YAML format, which locates at ``/etc/filebeat/filebeat.yml``. Under paths sub section which belongs to the Filebeat prospectors section, we commented out the default and added new entries to specify the path for the iRODS's log file.
-
+Filebeat configuration file is in YAML format, which locates at ``/etc/filebeat/filebeat.yml``. Under paths sub section which belongs to the Filebeat prospectors section, commented out the default and added new entries to specify the path for the iRODS's log file.
 
 
 .. code-block:: yml
@@ -62,7 +62,7 @@ Filebeat configuration file is in YAML format, which locates at ``/etc/filebeat/
    # Paths that should be crawled and fetched. Glob based paths.
      paths:
        - /var/lib/irods/log/audit.log*
-       - c:\programdata\elasticsearch\logs\*
+       #- c:\programdata\elasticsearch\logs\*
 
 
 Under Logstash output sub section which belongs to the Outputs section, we defined to use Logstash as the outputs when sending the iRODS's log file as data collection by the filebeat.

@@ -1,3 +1,5 @@
+.. _Ansible:
+
 Ansible
 ========
 We installed components against HPC nodes by ansible, which is an radically simple IT automation engine.
@@ -39,7 +41,10 @@ Ansible works against multiple HPC nodes in our infrastructure at the same time.
    [ceph-osd]
    cephosd[1:2].esciencecloud.sdu.dk
 
-The components we have installed by Ansible accross our HPC nodes, please refer to :ref:`components-installation-information`.
+Check where all the components are installed against the HPC nodes.
 
+.. image::  images/installed_components.png
+   :align:  center
+   :class:  components-installation
 
-For more information on our ansible playbooks please refer to `<https://github.com/SDU-eScience/eScienceCloud/tree/master/ansible/playbooks>`_
+For more information on our ansible installation and configuration, please refer to `<https://github.com/SDU-eScience/Ansible>`_

@@ -48,7 +48,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'SDU Cloud'
-copyright = u'2017, eScience Center, University of Southern Denmark, Denmark'
+copyright = u'2018, eScience Center, University of Southern Denmark, Denmark'
 author = u' Na Liu'
 
 # The version info for the project you're documenting, acts as replacement for

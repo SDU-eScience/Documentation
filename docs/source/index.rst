@@ -3,28 +3,36 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to SDU Cloud's documentation!
+Welcome to SDUCloud's documentation!
 =============================================
 
-This documentation exists to provide an introduction of the  SDU Cloud. The project aims to provide easy access to national HPC infrastructures, like the Abacus 2.0 supercomputer,allowing a researcher to run complex or heavy computations on a supercomputer in a completely seamless and automatic way. 
+This documentation exists to provide an introduction of the  SDUCloud. The project aims to provide easy access to national HPC infrastructures,like the Abacus 2.0 supercomputer,allowing a researcher to run complex or heavy computations on a supercomputer in a completely seamless and automatic way. 
 
 
 Overview, by components
 ========================
+* UI
+ * :ref:`Ktor`
+ * :ref:`React`
+* Service
+ * Authentication
+  * :ref:`WAYF`
+ * Data Management
+  * :ref:`Ceph`
+  * :ref:`iRODS`
+  * :ref:`iRODS_Re_Audit_Plugin`
+ * Data Pipline
+  * :ref:`Filebeat`
+  * :ref:`Elasticsearch`
+  * :ref:`Logstash`
+  * :ref:`Kibana`
+  * :ref:`Zookeeper`
+  * :ref:`Kafka`
+* Database
+ * :ref:`PostgreSQL`
+ * :ref:`Pgpool_II`
 
-* :doc:`/ansible`
-* :doc:`/iRODS`
-* :doc:`/ceph`
-* :doc:`/irods_re_audit_plugin`
-* :doc:`/elastic_stack`
-* :doc:`/postgreSQL_server`
-* :doc:`/pgpool_II`
-* :doc:`/ui`
-
-The usage descriptions, installations and configurations of each components are also availble by clicking the links. 
-
-
-The diagram illustrates how components are connected with each other.
+The diagram illustrates how components connected with each other.
  
 
 .. image::  images/components_communication_diagram_2.png
@@ -32,17 +40,9 @@ The diagram illustrates how components are connected with each other.
    :class:  components-communication
 
 
-Also check where all the components are installed against the HPC nodes.
-
-
-.. image::  images/installed_components.png
-   :align:  center
-   :class:  components-installation
-
-Overview, by data
-==================
-* :doc:`/backup_restore`
-
+Automation
+===========
+* :ref:`Ansible`
 
 
 .. toctree::

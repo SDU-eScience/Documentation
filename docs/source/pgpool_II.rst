@@ -1,3 +1,5 @@
+.. _Pgpool_II:
+
 Pgpool-II
 ==========
 
